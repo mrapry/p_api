@@ -1,4 +1,4 @@
-package com.psdkp.kkp.apipsdkp.controller;
+package com.psdkp.kkp.apipsdkp.controller.addressController;
 
 import com.psdkp.kkp.apipsdkp.domain.Input;
 import com.psdkp.kkp.apipsdkp.domain.address.Province;
@@ -15,20 +15,12 @@ public class ProvinceController {
     @Autowired
     private ProvinceServiceImpl provinceService;
 
-    @Autowired
-    private ProvinceDao provinceDao;
-
     @GetMapping
     public Object getFindByName(
-            @RequestParam(defaultValue = "") String search,
-            @RequestParam(defaultValue = "") Integer id,
+            @RequestParam(defaultValue = "", required = false) String name,
             Pageable pageable
     ){
-        if (id!=null){
-            return provinceDao.findById(id, pageable);
-        } else {
-            return provinceService.findByNameOrCode(search,pageable);
-        }
+        return provinceService.findAll(name, pageable);
     }
 
     @PostMapping

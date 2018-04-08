@@ -1,45 +1,44 @@
 package com.psdkp.kkp.apipsdkp.service.address.impl;
 
-import com.psdkp.kkp.apipsdkp.domain.address.City;
-import com.psdkp.kkp.apipsdkp.repository.address.CityDao;
-import com.psdkp.kkp.apipsdkp.service.address.CityService;
+import com.psdkp.kkp.apipsdkp.domain.address.District;
+import com.psdkp.kkp.apipsdkp.repository.address.DistrictDao;
+import com.psdkp.kkp.apipsdkp.service.address.DistrictService;
 import com.psdkp.kkp.apipsdkp.util.ResponMessage;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CityServiceImpl implements CityService{
+public class DistrictServiceImpl implements DistrictService {
 
     @Autowired
-    private CityDao cityDao;
+    private DistrictDao districtDao;
 
     @Autowired
     private ResponMessage responMessage;
 
     @Override
-    public Page<City> findAll(String name, Pageable pageable) {
-        return cityDao.findAllByName(name, pageable);
+    public Page<District> findAll(String name, Pageable pageable) {
+        return districtDao.findAllByName(name, pageable);
     }
 
     @Override
-    public Object save(City city) {
-        if (city.getName().equals("")||city.getCode().equals("")){
+    public Object save(District district) {
+        if (district.getName().equals("")||district.getCode().equals("")){
             return responMessage.atributNull();
         } else {
-            cityDao.save(city);
+            districtDao.save(district);
             return responMessage.success();
         }
     }
 
     @Override
-    public Object edit(City city) {
-        if (city.getId()==null||city.getName().equals("")||city.getCode().equals("")){
+    public Object edit(District district) {
+        if (district.getId()==null||district.getName().equals("")||district.getCode().equals("")){
             return responMessage.atributNull();
         } else {
-            cityDao.save(city);
+            districtDao.save(district);
             return responMessage.success();
         }
     }
@@ -49,8 +48,8 @@ public class CityServiceImpl implements CityService{
         if (id==null){
             return responMessage.atributNull();
         } else{
-            if (cityDao.findById(id).isPresent()){
-                cityDao.deleteById(id);
+            if (districtDao.findById(id).isPresent()){
+                districtDao.deleteById(id);
                 return responMessage.success();
             } else{
                 return responMessage.notFound();

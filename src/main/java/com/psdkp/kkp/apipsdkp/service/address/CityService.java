@@ -8,6 +8,4 @@ import org.springframework.data.domain.Page;
 
 public interface CityService extends BaseService<Object, City, Integer> {
 
-    Page<City> findByCode(String code, Pageable pageable);
-    Page<City> findByName(String name, Pageable pageable);
 }

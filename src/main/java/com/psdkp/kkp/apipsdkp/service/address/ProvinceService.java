@@ -6,7 +6,4 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ProvinceService extends BaseService<Object, Province, Integer> {
-
-    Page<Province> findByCode(String code, Pageable pageable);
-    Page<Province> findByNameOrCode(String name, Pageable pageable);
 }

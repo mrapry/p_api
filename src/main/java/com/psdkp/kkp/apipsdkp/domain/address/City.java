@@ -13,7 +13,7 @@ public class City {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "provinceId", referencedColumnName = "id")
+    @JoinColumn(name = "provinceId", referencedColumnName = "id", updatable = false)
     private Province province;
 
     private String code;

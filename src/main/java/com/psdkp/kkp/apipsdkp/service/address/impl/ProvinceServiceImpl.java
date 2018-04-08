@@ -19,18 +19,8 @@ public class ProvinceServiceImpl implements ProvinceService{
     private ResponMessage responMessage;
 
     @Override
-    public Page<Province> findByCode(String code, Pageable pageable) {
-        return provinceDao.findByCode(code, pageable);
-    }
-
-    @Override
-    public Page<Province> findByNameOrCode(String name,Pageable pageable) {
-        return provinceDao.findByNameOrCode(name, pageable);
-    }
-
-    @Override
-    public Page<Province> findAll(Pageable pageable) {
-        return provinceDao.findAll(pageable);
+    public Page<Province> findAll(String name, Pageable pageable) {
+        return provinceDao.findAllByName(name, pageable);
     }
 
     @Override

@@ -8,6 +8,4 @@ import org.springframework.data.domain.Pageable;
 
 public interface DistrictService extends BaseService<Object, District, Integer> {
 
-    Page<District> findByCode(String code, Pageable pageable);
-    Page<District> findByName(String name, Pageable pageable);
 }
