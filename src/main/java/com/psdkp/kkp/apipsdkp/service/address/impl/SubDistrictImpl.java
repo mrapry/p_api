@@ -20,41 +20,87 @@ public class SubDistrictImpl implements SubDistrictService{
     private ResponMessage responMessage;
 
     @Override
-    public Page<SubDistrict> findAll(String name, Pageable pageable) {
-        return subDistrictDao.findAllByName(name, pageable);
+    public Object findAll(String name, Pageable pageable) {
+        return responMessage.SUCCESS_GET(subDistrictDao.findAllByName(name, pageable));
     }
 
     @Override
-    public Object save(SubDistrict province) {
-        if (province.getName().equals("")||province.getCode().equals("")){
-            return responMessage.atributNull();
+    public Object save(SubDistrict subDistrict) {
+        if (subDistrict.getName().equals("")||subDistrict.getCode().equals("")){
+            return responMessage.BAD_REUQEST();
         } else {
-            subDistrictDao.save(province);
-            return responMessage.success();
+            SubDistrict p = subDistrictDao.findByCode(subDistrict.getCode());
+            if (p != null){
+                return responMessage.DUPLICATE("KODE");
+            } else {
+                SubDistrict p2 = subDistrictDao.findByName(subDistrict.getName());
+                if (p2 !=null){
+                    return responMessage.DUPLICATE("NAMA");
+                } else {
+                    subDistrictDao.save(subDistrict);
+                    return responMessage.SUCCESS_PROCESS_DATA();
+                }
+            }
         }
     }
 
     @Override
-    public Object edit(SubDistrict province) {
-        if (province.getId()==null||province.getName().equals("")||province.getCode().equals("")){
-            return responMessage.atributNull();
+    public Object edit(SubDistrict subDistrict) {
+        if (subDistrict.getId()==null||subDistrict.getName().equals("")||subDistrict.getCode().equals("")){
+            return responMessage.BAD_REUQEST();
         } else {
-            subDistrictDao.save(province);
-            return responMessage.success();
+            SubDistrict pCode= subDistrictDao.findId(subDistrict.getId());
+            if(pCode!= null){
+                if (subDistrict.getCode().equals(pCode.getCode())){
+                    SubDistrict p2 = subDistrictDao.findByName(subDistrict.getName());
+                    if (p2 !=null){
+                        return responMessage.DUPLICATE("NAMA");
+                    } else {
+                        subDistrictDao.save(subDistrict);
+                        return responMessage.SUCCESS_PROCESS_DATA();
+                    }
+                } else {
+                    SubDistrict proCode = subDistrictDao.findByCode(subDistrict.getCode());
+                    if (proCode!=null){
+                        return responMessage.DUPLICATE("CODE");
+                    } else {
+                        SubDistrict p2 = subDistrictDao.findByName(subDistrict.getName());
+                        if (p2 !=null){
+                            return responMessage.DUPLICATE("NAMA");
+                        } else {
+                            subDistrictDao.save(subDistrict);
+                            return responMessage.SUCCESS_PROCESS_DATA();
+                        }
+                    }
+                }
+            } else {
+                return responMessage.NOT_FOUND("ID");
+            }
         }
     }
 
     @Override
     public Object del(Integer id) {
         if (id==null){
-            return responMessage.atributNull();
+            return responMessage.BAD_REUQEST();
         } else{
-            if (subDistrictDao.findById(id).isPresent()){
+            SubDistrict pCode= subDistrictDao.findId(id);
+            if(pCode!= null){
                 subDistrictDao.deleteById(id);
-                return responMessage.success();
-            } else{
-                return responMessage.notFound();
+                return responMessage.SUCCESS_PROCESS_DATA();
+            } else {
+                return responMessage.NOT_FOUND("ID");
             }
+        }
+    }
+
+    @Override
+    public Object findById(Integer id) {
+        SubDistrict pCode= subDistrictDao.findId(id);
+        if(pCode!= null){
+            return responMessage.SUCCESS_GET(subDistrictDao.findById(id));
+        } else {
+            return responMessage.NOT_FOUND("ID");
         }
     }
 }

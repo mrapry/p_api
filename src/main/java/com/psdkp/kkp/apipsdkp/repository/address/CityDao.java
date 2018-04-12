@@ -14,4 +14,10 @@ public interface CityDao extends PagingAndSortingRepository<City, Integer>{
 
     @Query(value = "select * from city p where p.name like %?1% or p.code like %?1%", nativeQuery = true)
     Page<City> findAllByName(String name, Pageable pageable);
+
+    City findByCode(String code);
+    City findByName(String name);
+
+    @Query(value = "select * from city p where p.id=?1", nativeQuery = true)
+    City findId(Integer id);
 }

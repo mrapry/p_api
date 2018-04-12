@@ -18,9 +18,14 @@ public class ProvinceController {
     @GetMapping
     public Object getFindByName(
             @RequestParam(defaultValue = "", required = false) String name,
+            @RequestParam(defaultValue = "", required = false) Integer id,
             Pageable pageable
     ){
-        return provinceService.findAll(name, pageable);
+        if (id!=null){
+            return provinceService.findById(id);
+        } else {
+            return provinceService.findAll(name, pageable);
+        }
     }
 
     @PostMapping
@@ -30,6 +35,7 @@ public class ProvinceController {
 
     @PutMapping
     public Object editProvince(@RequestBody Province province){
+        System.out.println(province.toString());
         return provinceService.edit(province);
     }
 

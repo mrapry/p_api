@@ -13,7 +13,7 @@ public class SubDistrict {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "districId", referencedColumnName = "id")
+    @JoinColumn(name = "districtId", referencedColumnName = "id")
     private District district;
 
     private String code;

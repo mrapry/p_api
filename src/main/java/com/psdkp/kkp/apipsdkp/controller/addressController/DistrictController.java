@@ -17,9 +17,14 @@ public class DistrictController {
     @GetMapping
     public Object getFindByName(
             @RequestParam(defaultValue = "", required = false) String name,
+            @RequestParam(defaultValue = "", required = false) Integer id,
             Pageable pageable
     ){
-        return districtService.findAll(name, pageable);
+        if (id!=null){
+            return districtService.findById(id);
+        } else {
+            return districtService.findAll(name, pageable);
+        }
     }
 
     @PostMapping

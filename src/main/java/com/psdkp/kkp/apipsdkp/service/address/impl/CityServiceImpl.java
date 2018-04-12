@@ -20,41 +20,87 @@ public class CityServiceImpl implements CityService{
     private ResponMessage responMessage;
 
     @Override
-    public Page<City> findAll(String name, Pageable pageable) {
-        return cityDao.findAllByName(name, pageable);
+    public Object findAll(String name, Pageable pageable) {
+        return responMessage.SUCCESS_GET(cityDao.findAllByName(name, pageable));
     }
 
     @Override
     public Object save(City city) {
         if (city.getName().equals("")||city.getCode().equals("")){
-            return responMessage.atributNull();
+            return responMessage.BAD_REUQEST();
         } else {
-            cityDao.save(city);
-            return responMessage.success();
+            City p = cityDao.findByCode(city.getCode());
+            if (p != null){
+                return responMessage.DUPLICATE("KODE");
+            } else {
+                City p2 = cityDao.findByName(city.getName());
+                if (p2 !=null){
+                    return responMessage.DUPLICATE("NAMA");
+                } else {
+                    cityDao.save(city);
+                    return responMessage.SUCCESS_PROCESS_DATA();
+                }
+            }
         }
     }
 
     @Override
     public Object edit(City city) {
         if (city.getId()==null||city.getName().equals("")||city.getCode().equals("")){
-            return responMessage.atributNull();
+            return responMessage.BAD_REUQEST();
         } else {
-            cityDao.save(city);
-            return responMessage.success();
+            City pCode= cityDao.findId(city.getId());
+            if(pCode!= null){
+                if (city.getCode().equals(pCode.getCode())){
+                    City p2 = cityDao.findByName(city.getName());
+                    if (p2 !=null){
+                        return responMessage.DUPLICATE("NAMA");
+                    } else {
+                        cityDao.save(city);
+                        return responMessage.SUCCESS_PROCESS_DATA();
+                    }
+                } else {
+                    City proCode = cityDao.findByCode(city.getCode());
+                    if (proCode!=null){
+                        return responMessage.DUPLICATE("CODE");
+                    } else {
+                        City p2 = cityDao.findByName(city.getName());
+                        if (p2 !=null){
+                            return responMessage.DUPLICATE("NAMA");
+                        } else {
+                            cityDao.save(city);
+                            return responMessage.SUCCESS_PROCESS_DATA();
+                        }
+                    }
+                }
+            } else {
+                return responMessage.NOT_FOUND("ID");
+            }
         }
     }
 
     @Override
     public Object del(Integer id) {
         if (id==null){
-            return responMessage.atributNull();
+            return responMessage.BAD_REUQEST();
         } else{
-            if (cityDao.findById(id).isPresent()){
+            City pCode= cityDao.findId(id);
+            if(pCode!= null){
                 cityDao.deleteById(id);
-                return responMessage.success();
-            } else{
-                return responMessage.notFound();
+                return responMessage.SUCCESS_PROCESS_DATA();
+            } else {
+                return responMessage.NOT_FOUND("ID");
             }
+        }
+    }
+
+    @Override
+    public Object findById(Integer id) {
+        City pCode= cityDao.findId(id);
+        if(pCode!= null){
+            return responMessage.SUCCESS_GET(cityDao.findById(id));
+        } else {
+            return responMessage.NOT_FOUND("ID");
         }
     }
 }

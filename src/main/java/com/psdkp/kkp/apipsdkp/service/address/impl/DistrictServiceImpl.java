@@ -19,41 +19,87 @@ public class DistrictServiceImpl implements DistrictService {
     private ResponMessage responMessage;
 
     @Override
-    public Page<District> findAll(String name, Pageable pageable) {
-        return districtDao.findAllByName(name, pageable);
+    public Object findAll(String name, Pageable pageable) {
+        return responMessage.SUCCESS_GET(districtDao.findAllByName(name, pageable));
     }
 
     @Override
     public Object save(District district) {
         if (district.getName().equals("")||district.getCode().equals("")){
-            return responMessage.atributNull();
+            return responMessage.BAD_REUQEST();
         } else {
-            districtDao.save(district);
-            return responMessage.success();
+            District p = districtDao.findByCode(district.getCode());
+            if (p != null){
+                return responMessage.DUPLICATE("KODE");
+            } else {
+                District p2 = districtDao.findByName(district.getName());
+                if (p2 !=null){
+                    return responMessage.DUPLICATE("NAMA");
+                } else {
+                    districtDao.save(district);
+                    return responMessage.SUCCESS_PROCESS_DATA();
+                }
+            }
         }
     }
 
     @Override
     public Object edit(District district) {
         if (district.getId()==null||district.getName().equals("")||district.getCode().equals("")){
-            return responMessage.atributNull();
+            return responMessage.BAD_REUQEST();
         } else {
-            districtDao.save(district);
-            return responMessage.success();
+            District pCode= districtDao.findId(district.getId());
+            if(pCode!= null){
+                if (district.getCode().equals(pCode.getCode())){
+                    District p2 = districtDao.findByName(district.getName());
+                    if (p2 !=null){
+                        return responMessage.DUPLICATE("NAMA");
+                    } else {
+                        districtDao.save(district);
+                        return responMessage.SUCCESS_PROCESS_DATA();
+                    }
+                } else {
+                    District proCode = districtDao.findByCode(district.getCode());
+                    if (proCode!=null){
+                        return responMessage.DUPLICATE("CODE");
+                    } else {
+                        District p2 = districtDao.findByName(district.getName());
+                        if (p2 !=null){
+                            return responMessage.DUPLICATE("NAMA");
+                        } else {
+                            districtDao.save(district);
+                            return responMessage.SUCCESS_PROCESS_DATA();
+                        }
+                    }
+                }
+            } else {
+                return responMessage.NOT_FOUND("ID");
+            }
         }
     }
 
     @Override
     public Object del(Integer id) {
         if (id==null){
-            return responMessage.atributNull();
+            return responMessage.BAD_REUQEST();
         } else{
-            if (districtDao.findById(id).isPresent()){
+            District pCode= districtDao.findId(id);
+            if(pCode!= null){
                 districtDao.deleteById(id);
-                return responMessage.success();
-            } else{
-                return responMessage.notFound();
+                return responMessage.SUCCESS_PROCESS_DATA();
+            } else {
+                return responMessage.NOT_FOUND("ID");
             }
+        }
+    }
+
+    @Override
+    public Object findById(Integer id) {
+        District pCode= districtDao.findId(id);
+        if(pCode!= null){
+            return responMessage.SUCCESS_GET(districtDao.findById(id));
+        } else {
+            return responMessage.NOT_FOUND("ID");
         }
     }
 }

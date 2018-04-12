@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ProvinceServiceImpl implements ProvinceService{
 
@@ -19,41 +21,87 @@ public class ProvinceServiceImpl implements ProvinceService{
     private ResponMessage responMessage;
 
     @Override
-    public Page<Province> findAll(String name, Pageable pageable) {
-        return provinceDao.findAllByName(name, pageable);
+    public Object findAll(String name, Pageable pageable) {
+        return responMessage.SUCCESS_GET(provinceDao.findAllByName(name, pageable));
     }
 
     @Override
     public Object save(Province province) {
         if (province.getName().equals("")||province.getCode().equals("")){
-            return responMessage.atributNull();
+            return responMessage.BAD_REUQEST();
         } else {
-            provinceDao.save(province);
-            return responMessage.success();
+            Province p = provinceDao.findByCode(province.getCode());
+            if (p != null){
+                return responMessage.DUPLICATE("KODE");
+            } else {
+                Province p2 = provinceDao.findByName(province.getName());
+                if (p2 !=null){
+                    return responMessage.DUPLICATE("NAMA");
+                } else {
+                    provinceDao.save(province);
+                    return responMessage.SUCCESS_PROCESS_DATA();
+                }
+            }
         }
     }
 
     @Override
     public Object edit(Province province) {
         if (province.getId()==null||province.getName().equals("")||province.getCode().equals("")){
-            return responMessage.atributNull();
+            return responMessage.BAD_REUQEST();
         } else {
-            provinceDao.save(province);
-            return responMessage.success();
+            Province pCode= provinceDao.findId(province.getId());
+            if(pCode!= null){
+                if (province.getCode().equals(pCode.getCode())){
+                    Province p2 = provinceDao.findByName(province.getName());
+                    if (p2 !=null){
+                        return responMessage.DUPLICATE("NAMA");
+                    } else {
+                        provinceDao.save(province);
+                        return responMessage.SUCCESS_PROCESS_DATA();
+                    }
+                } else {
+                    Province proCode = provinceDao.findByCode(province.getCode());
+                    if (proCode!=null){
+                        return responMessage.DUPLICATE("CODE");
+                    } else {
+                        Province p2 = provinceDao.findByName(province.getName());
+                        if (p2 !=null){
+                            return responMessage.DUPLICATE("NAMA");
+                        } else {
+                            provinceDao.save(province);
+                            return responMessage.SUCCESS_PROCESS_DATA();
+                        }
+                    }
+                }
+            } else {
+                return responMessage.NOT_FOUND("ID");
+            }
         }
     }
 
     @Override
     public Object del(Integer id) {
         if (id==null){
-            return responMessage.atributNull();
+            return responMessage.BAD_REUQEST();
         } else{
-            if (provinceDao.findById(id).isPresent()){
+            Province pCode= provinceDao.findId(id);
+            if(pCode!= null){
                 provinceDao.deleteById(id);
-                return responMessage.success();
-            } else{
-                return responMessage.notFound();
+                return responMessage.SUCCESS_PROCESS_DATA();
+            } else {
+                return responMessage.NOT_FOUND("ID");
             }
+        }
+    }
+
+    @Override
+    public Object findById(Integer id) {
+        Province pCode= provinceDao.findId(id);
+        if(pCode!= null){
+            return responMessage.SUCCESS_GET(provinceDao.findById(id));
+        } else {
+            return responMessage.NOT_FOUND("ID");
         }
     }
 }

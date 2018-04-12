@@ -17,11 +17,16 @@ public class CityController{
     private CityServiceImpl cityService;
 
     @GetMapping
-    public Object findAll(
+    public Object getFindByName(
             @RequestParam(defaultValue = "", required = false) String name,
+            @RequestParam(defaultValue = "", required = false) Integer id,
             Pageable pageable
     ){
-        return cityService.findAll(name, pageable);
+        if (id!=null){
+            return cityService.findById(id);
+        } else {
+            return cityService.findAll(name, pageable);
+        }
     }
 
     @PostMapping

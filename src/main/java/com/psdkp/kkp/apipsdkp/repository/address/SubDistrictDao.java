@@ -14,4 +14,10 @@ public interface SubDistrictDao extends PagingAndSortingRepository<SubDistrict, 
 
     @Query(value = "select * from sub_district p where p.name like %?1% or p.code like %?1%", nativeQuery = true)
     Page<SubDistrict> findAllByName(String name, Pageable pageable);
+
+    SubDistrict findByCode(String code);
+    SubDistrict findByName(String name);
+
+    @Query(value = "select * from sub_district p where p.id=?1", nativeQuery = true)
+    SubDistrict findId(Integer id);
 }

@@ -14,4 +14,10 @@ public interface DistrictDao extends PagingAndSortingRepository<District, Intege
 
     @Query(value = "select * from district p where p.name like %?1% or p.code like %?1%", nativeQuery = true)
     Page<District> findAllByName(String name, Pageable pageable);
+
+    District findByCode(String code);
+    District findByName(String name);
+
+    @Query(value = "select * from district p where p.id=?1", nativeQuery = true)
+    District findId(Integer id);
 }

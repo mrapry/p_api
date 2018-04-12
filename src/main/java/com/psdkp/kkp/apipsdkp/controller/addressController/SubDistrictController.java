@@ -17,9 +17,14 @@ public class SubDistrictController {
     @GetMapping
     public Object getFindByName(
             @RequestParam(defaultValue = "", required = false) String name,
+            @RequestParam(defaultValue = "", required = false) Integer id,
             Pageable pageable
     ){
-        return subDistrictService.findAll(name, pageable);
+        if (id!=null){
+            return subDistrictService.findById(id);
+        } else {
+            return subDistrictService.findAll(name, pageable);
+        }
     }
 
     @PostMapping

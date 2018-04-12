@@ -4,15 +4,9 @@ import java.util.Map;
 
 public interface BaseUtil {
 
-    Map success();
-    Map notFound();
-    Map isExist();
-    Map notSave();
-    Map notEdit();
-    Map notDel();
-    Map badRequest();
-    Map atributNull();
-    Map notAuthorized();
-    Map loginTrouble();
-    Map isEmpty();
+    Map SUCCESS_GET(Object data);
+    Map BAD_REUQEST();
+    Map DUPLICATE(String atribut);
+    Map SUCCESS_PROCESS_DATA();
+    Map NOT_FOUND(String atribut);
 }

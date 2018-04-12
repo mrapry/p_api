@@ -7,99 +7,52 @@ import java.util.Map;
 
 @Component
 public class ResponMessage implements BaseUtil {
-
-    /*
-    * Responde
-    * */
-
-    private String rSuccess="Operation success";
-    private String rNotFound="Not found data";
-    private String rIsExist="Data is exits";
-    private String rNotSave="Data not save";
-    private String rNotEdit="Data Not Edit";
-    private String rNotDel="Data Not Delete";
-    private String rBadRequest="Bad request";
-    private String rAttributNull="Atribut Null";
-    private String rNotAuthorized="Not Authorzed";
-    private String rLoginTroble="Login is trouble";
-    private String rIsEmpty="Data is empty";
-
+    
     Map m = new HashMap();
 
     @Override
-    public Map success() {
+    public Map SUCCESS_GET(Object data) {
         m.clear();
-        m.put("message", rSuccess);
+        m.put("code",AppConstants.C_SUCCESS_GET);
+        m.put("message",AppConstants.SUCCESS_GET);
+        m.put("data", data);
+        return m;
+    }
+
+
+    @Override
+    public Map BAD_REUQEST() {
+        m.clear();
+        m.put("code",AppConstants.C_BAD_REQUEST);
+        m.put("message",AppConstants.BAD_REQUEST);
+        m.put("data", null);
         return m;
     }
 
     @Override
-    public Map notFound() {
+    public Map DUPLICATE(String atribut) {
         m.clear();
-        m.put("message", rNotFound);
+        m.put("code",AppConstants.C_DUPLICATE);
+        m.put("message",AppConstants.DUPLICATE + " \'"+atribut+"\'");
+        m.put("data", null);
         return m;
     }
 
     @Override
-    public Map isExist() {
+    public Map SUCCESS_PROCESS_DATA() {
         m.clear();
-        m.put("message", rIsExist);
+        m.put("code",AppConstants.C_SUCCESS_PROCESS);
+        m.put("message",AppConstants.SUCCESS_PROCESS);
+        m.put("data", null);
         return m;
     }
 
     @Override
-    public Map notSave() {
+    public Map NOT_FOUND(String atribut) {
         m.clear();
-        m.put("message", rNotSave);
-        return m;
-    }
-
-    @Override
-    public Map notEdit() {
-        m.clear();
-        m.put("message", rNotEdit);
-        return m;
-    }
-
-    @Override
-    public Map notDel() {
-        m.clear();
-        m.put("message", rNotEdit);
-        return m;
-    }
-
-    @Override
-    public Map badRequest() {
-        m.clear();
-        m.put("message", rBadRequest);
-        return m;
-    }
-
-    @Override
-    public Map atributNull() {
-        m.clear();
-        m.put("message", rAttributNull);
-        return m;
-    }
-
-    @Override
-    public Map notAuthorized() {
-        m.clear();
-        m.put("message", rNotAuthorized);
-        return m;
-    }
-
-    @Override
-    public Map loginTrouble() {
-        m.clear();
-        m.put("message", rLoginTroble);
-        return m;
-    }
-
-    @Override
-    public Map isEmpty() {
-        m.clear();
-        m.put("message", rIsEmpty);
+        m.put("code",AppConstants.C_NOT_FOUND);
+        m.put("message",AppConstants.NOT_FOUND + " \'"+atribut+"\'");
+        m.put("data", null);
         return m;
     }
 }
