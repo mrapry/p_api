@@ -39,7 +39,7 @@ public class CityController{
         return cityService.edit(city);
     }
 
-    @DeleteMapping
+    @DeleteMapping(value = "/del")
     public Object del(@RequestBody Input in){
         return cityService.del(in.getId());
     }

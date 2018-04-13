@@ -6,4 +6,5 @@ import lombok.Data;
 public class Input {
 
     private Integer id;
+    private String status;
 }
