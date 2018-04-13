@@ -65,9 +65,14 @@ public class ProvinceServiceImpl implements ProvinceService{
                     if (proCode!=null){
                         return responMessage.DUPLICATE("CODE");
                     } else {
-                        Province p2 = provinceDao.findByName(province.getName());
-                        if (p2 !=null){
-                            return responMessage.DUPLICATE("NAMA");
+                        if (!province.getName().equals(pCode.getName())){
+                            Province p2 = provinceDao.findByName(province.getName());
+                            if (p2 !=null){
+                                return responMessage.DUPLICATE("NAMA");
+                            } else {
+                                provinceDao.save(province);
+                                return responMessage.SUCCESS_PROCESS_DATA();
+                            }
                         } else {
                             provinceDao.save(province);
                             return responMessage.SUCCESS_PROCESS_DATA();

@@ -63,9 +63,14 @@ public class DistrictServiceImpl implements DistrictService {
                     if (proCode!=null){
                         return responMessage.DUPLICATE("CODE");
                     } else {
-                        District p2 = districtDao.findByName(district.getName());
-                        if (p2 !=null){
-                            return responMessage.DUPLICATE("NAMA");
+                        if (!district.getName().equals(pCode.getName())){
+                            District p2 = districtDao.findByName(district.getName());
+                            if (p2 !=null){
+                                return responMessage.DUPLICATE("NAMA");
+                            } else {
+                                districtDao.save(district);
+                                return responMessage.SUCCESS_PROCESS_DATA();
+                            }
                         } else {
                             districtDao.save(district);
                             return responMessage.SUCCESS_PROCESS_DATA();

@@ -64,9 +64,14 @@ public class CityServiceImpl implements CityService{
                     if (proCode!=null){
                         return responMessage.DUPLICATE("CODE");
                     } else {
-                        City p2 = cityDao.findByName(city.getName());
-                        if (p2 !=null){
-                            return responMessage.DUPLICATE("NAMA");
+                        if (!city.getName().equals(pCode.getName())){
+                            City p2 = cityDao.findByName(city.getName());
+                            if (p2 !=null){
+                                return responMessage.DUPLICATE("NAMA");
+                            } else {
+                                cityDao.save(city);
+                                return responMessage.SUCCESS_PROCESS_DATA();
+                            }
                         } else {
                             cityDao.save(city);
                             return responMessage.SUCCESS_PROCESS_DATA();

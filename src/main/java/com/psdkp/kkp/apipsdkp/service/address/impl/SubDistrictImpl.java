@@ -64,9 +64,14 @@ public class SubDistrictImpl implements SubDistrictService{
                     if (proCode!=null){
                         return responMessage.DUPLICATE("CODE");
                     } else {
-                        SubDistrict p2 = subDistrictDao.findByName(subDistrict.getName());
-                        if (p2 !=null){
-                            return responMessage.DUPLICATE("NAMA");
+                        if (!subDistrict.getName().equals(pCode.getName())){
+                            SubDistrict p2 = subDistrictDao.findByName(subDistrict.getName());
+                            if (p2 !=null){
+                                return responMessage.DUPLICATE("NAMA");
+                            } else {
+                                subDistrictDao.save(subDistrict);
+                                return responMessage.SUCCESS_PROCESS_DATA();
+                            }
                         } else {
                             subDistrictDao.save(subDistrict);
                             return responMessage.SUCCESS_PROCESS_DATA();
