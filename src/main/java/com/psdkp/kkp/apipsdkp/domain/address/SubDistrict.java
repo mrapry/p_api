@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class SubDistrict {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne

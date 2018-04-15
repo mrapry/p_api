@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value="/address/district")
+@RequestMapping(value = "/address/district")
 public class DistrictController {
 
     @Autowired
@@ -19,8 +19,8 @@ public class DistrictController {
             @RequestParam(defaultValue = "", required = false) String name,
             @RequestParam(defaultValue = "", required = false) Integer id,
             Pageable pageable
-    ){
-        if (id!=null){
+    ) {
+        if (id != null) {
             return districtService.findById(id);
         } else {
             return districtService.findAll(name, pageable);
@@ -28,17 +28,17 @@ public class DistrictController {
     }
 
     @PostMapping
-    public Object saveProvince(@RequestBody District province){
-        return districtService.save(province);
+    public Object saveDistrict(@RequestBody District district) {
+        return districtService.save(district);
     }
 
     @PutMapping
-    public Object editProvince(@RequestBody District province){
-        return districtService.edit(province);
+    public Object editDistrict(@RequestBody District district) {
+        return districtService.edit(district);
     }
 
     @DeleteMapping(value = "/del")
-    public Object removeProvince(@RequestBody Input in){
+    public Object removeDistrict(@RequestBody Input in) {
         return districtService.del(in.getId());
     }
 }
