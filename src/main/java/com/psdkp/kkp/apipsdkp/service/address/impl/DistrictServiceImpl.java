@@ -25,15 +25,15 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public Object save(District district) {
-        if (district.getName().equals("")||district.getCode().equals("")){
+        if (district.getName().equals("") || district.getCode().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
             District p = districtDao.findByCode(district.getCode());
-            if (p != null){
+            if (p != null) {
                 return responMessage.DUPLICATE("KODE");
             } else {
                 District p2 = districtDao.findByName(district.getName());
-                if (p2 !=null){
+                if (p2 != null) {
                     return responMessage.DUPLICATE("NAMA");
                 } else {
                     districtDao.save(district);
@@ -45,14 +45,14 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public Object edit(District district) {
-        if (district.getId()==null||district.getName().equals("")||district.getCode().equals("")){
+        if (district.getId() == null || district.getName().equals("") || district.getCode().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
-            District pCode= districtDao.findId(district.getId());
-            if(pCode!= null){
-                if (district.getCode().equals(pCode.getCode())){
+            District pCode = districtDao.findId(district.getId());
+            if (pCode != null) {
+                if (district.getCode().equals(pCode.getCode())) {
                     District p2 = districtDao.findByName(district.getName());
-                    if (p2 !=null){
+                    if (p2 != null) {
                         return responMessage.DUPLICATE("NAMA");
                     } else {
                         districtDao.save(district);
@@ -60,12 +60,12 @@ public class DistrictServiceImpl implements DistrictService {
                     }
                 } else {
                     District proCode = districtDao.findByCode(district.getCode());
-                    if (proCode!=null){
+                    if (proCode != null) {
                         return responMessage.DUPLICATE("CODE");
                     } else {
-                        if (!district.getName().equals(pCode.getName())){
+                        if (!district.getName().equals(pCode.getName())) {
                             District p2 = districtDao.findByName(district.getName());
-                            if (p2 !=null){
+                            if (p2 != null) {
                                 return responMessage.DUPLICATE("NAMA");
                             } else {
                                 districtDao.save(district);
@@ -85,11 +85,11 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public Object del(Integer id) {
-        if (id==null){
+        if (id == null) {
             return responMessage.BAD_REUQEST();
-        } else{
-            District pCode= districtDao.findId(id);
-            if(pCode!= null){
+        } else {
+            District pCode = districtDao.findId(id);
+            if (pCode != null) {
                 districtDao.deleteById(id);
                 return responMessage.SUCCESS_PROCESS_DATA();
             } else {
@@ -100,8 +100,8 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Override
     public Object findById(Integer id) {
-        District pCode= districtDao.findId(id);
-        if(pCode!= null){
+        District pCode = districtDao.findId(id);
+        if (pCode != null) {
             return responMessage.SUCCESS_GET(districtDao.findById(id));
         } else {
             return responMessage.NOT_FOUND("ID");

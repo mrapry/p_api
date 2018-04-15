@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SubDistrictImpl implements SubDistrictService{
+public class SubDistrictImpl implements SubDistrictService {
 
     @Autowired
     private SubDistrictDao subDistrictDao;
@@ -26,15 +26,15 @@ public class SubDistrictImpl implements SubDistrictService{
 
     @Override
     public Object save(SubDistrict subDistrict) {
-        if (subDistrict.getName().equals("")||subDistrict.getCode().equals("")){
+        if (subDistrict.getName().equals("") || subDistrict.getCode().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
             SubDistrict p = subDistrictDao.findByCode(subDistrict.getCode());
-            if (p != null){
+            if (p != null) {
                 return responMessage.DUPLICATE("KODE");
             } else {
                 SubDistrict p2 = subDistrictDao.findByName(subDistrict.getName());
-                if (p2 !=null){
+                if (p2 != null) {
                     return responMessage.DUPLICATE("NAMA");
                 } else {
                     subDistrictDao.save(subDistrict);
@@ -46,14 +46,14 @@ public class SubDistrictImpl implements SubDistrictService{
 
     @Override
     public Object edit(SubDistrict subDistrict) {
-        if (subDistrict.getId()==null||subDistrict.getName().equals("")||subDistrict.getCode().equals("")){
+        if (subDistrict.getId() == null || subDistrict.getName().equals("") || subDistrict.getCode().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
-            SubDistrict pCode= subDistrictDao.findId(subDistrict.getId());
-            if(pCode!= null){
-                if (subDistrict.getCode().equals(pCode.getCode())){
+            SubDistrict pCode = subDistrictDao.findId(subDistrict.getId());
+            if (pCode != null) {
+                if (subDistrict.getCode().equals(pCode.getCode())) {
                     SubDistrict p2 = subDistrictDao.findByName(subDistrict.getName());
-                    if (p2 !=null){
+                    if (p2 != null) {
                         return responMessage.DUPLICATE("NAMA");
                     } else {
                         subDistrictDao.save(subDistrict);
@@ -61,12 +61,12 @@ public class SubDistrictImpl implements SubDistrictService{
                     }
                 } else {
                     SubDistrict proCode = subDistrictDao.findByCode(subDistrict.getCode());
-                    if (proCode!=null){
+                    if (proCode != null) {
                         return responMessage.DUPLICATE("CODE");
                     } else {
-                        if (!subDistrict.getName().equals(pCode.getName())){
+                        if (!subDistrict.getName().equals(pCode.getName())) {
                             SubDistrict p2 = subDistrictDao.findByName(subDistrict.getName());
-                            if (p2 !=null){
+                            if (p2 != null) {
                                 return responMessage.DUPLICATE("NAMA");
                             } else {
                                 subDistrictDao.save(subDistrict);
@@ -86,11 +86,11 @@ public class SubDistrictImpl implements SubDistrictService{
 
     @Override
     public Object del(Integer id) {
-        if (id==null){
+        if (id == null) {
             return responMessage.BAD_REUQEST();
-        } else{
-            SubDistrict pCode= subDistrictDao.findId(id);
-            if(pCode!= null){
+        } else {
+            SubDistrict pCode = subDistrictDao.findId(id);
+            if (pCode != null) {
                 subDistrictDao.deleteById(id);
                 return responMessage.SUCCESS_PROCESS_DATA();
             } else {
@@ -101,8 +101,8 @@ public class SubDistrictImpl implements SubDistrictService{
 
     @Override
     public Object findById(Integer id) {
-        SubDistrict pCode= subDistrictDao.findId(id);
-        if(pCode!= null){
+        SubDistrict pCode = subDistrictDao.findId(id);
+        if (pCode != null) {
             return responMessage.SUCCESS_GET(subDistrictDao.findById(id));
         } else {
             return responMessage.NOT_FOUND("ID");
