@@ -37,8 +37,6 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
             UnitWorking u3 = unitWorkingDao.findByPhone(unitWorking.getPhone());
             UnitWorking u4 = unitWorkingDao.findByFaxmail(unitWorking.getFaxmail());
             UnitWorking u5 = unitWorkingDao.findByEmail(unitWorking.getEmail());
-            UnitWorking u6 = unitWorkingDao.findByLangitude(unitWorking.getLangitude());
-            UnitWorking u7 = unitWorkingDao.findByLongitude(unitWorking.getLongitude());
             UnitWorking u8 = unitWorkingDao.findByServiceLocation(unitWorking.getServiceLocation());
             TypeUnit u9 = typeUnitDao.findId(unitWorking.getTypeUnit().getId());
 
@@ -46,6 +44,16 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                 return responMessage.NOT_FOUND("UNIT TYPE");
             } else if (u1 != null) {
                 return responMessage.DUPLICATE("KODE");
+            } else if (u2 != null){
+                return responMessage.DUPLICATE("NAME");
+            } else if (u3 != null){
+                return responMessage.DUPLICATE("PHONE");
+            } else if (u4 != null){
+                return responMessage.DUPLICATE("FAXIMAIL");
+            } else if (u5 !=null){
+                return responMessage.DUPLICATE("EMAIL");
+            } else if (u8 != null){
+                return responMessage.DUPLICATE("SERVICE LOCATION");
             } else {
                 unitWorkingDao.save(unitWorking);
                 return responMessage.SUCCESS_PROCESS_DATA();
@@ -97,11 +105,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                                 if (uw6 != null) {
                                                                     return responMessage.DUPLICATE("SERVICE LOCATION");
                                                                 } else {
-                                                                    save(unitWorking);
+                                                                    unitWorkingDao.save(unitWorking);
                                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                                 }
                                                             } else {
-                                                                save(unitWorking);
+                                                                unitWorkingDao.save(unitWorking);
                                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                                             }
                                                         }
@@ -110,11 +118,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                             if (uw6 != null) {
                                                                 return responMessage.DUPLICATE("SERVICE LOCATION");
                                                             } else {
-                                                                save(unitWorking);
+                                                                unitWorkingDao.save(unitWorking);
                                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                                             }
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     }
@@ -128,11 +136,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                             if (uw6 != null) {
                                                                 return responMessage.DUPLICATE("SERVICE LOCATION");
                                                             } else {
-                                                                save(unitWorking);
+                                                                unitWorkingDao.save(unitWorking);
                                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                                             }
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     }
@@ -141,11 +149,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                         if (uw6 != null) {
                                                             return responMessage.DUPLICATE("SERVICE LOCATION");
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 }
@@ -164,11 +172,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                             if (uw6 != null) {
                                                                 return responMessage.DUPLICATE("SERVICE LOCATION");
                                                             } else {
-                                                                save(unitWorking);
+                                                                unitWorkingDao.save(unitWorking);
                                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                                             }
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     }
@@ -177,11 +185,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                         if (uw6 != null) {
                                                             return responMessage.DUPLICATE("SERVICE LOCATION");
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 }
@@ -195,11 +203,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                         if (uw6 != null) {
                                                             return responMessage.DUPLICATE("SERVICE LOCATION");
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 }
@@ -208,11 +216,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                     if (uw6 != null) {
                                                         return responMessage.DUPLICATE("SERVICE LOCATION");
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             }
@@ -236,11 +244,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                             if (uw6 != null) {
                                                                 return responMessage.DUPLICATE("SERVICE LOCATION");
                                                             } else {
-                                                                save(unitWorking);
+                                                                unitWorkingDao.save(unitWorking);
                                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                                             }
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     }
@@ -249,11 +257,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                         if (uw6 != null) {
                                                             return responMessage.DUPLICATE("SERVICE LOCATION");
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 }
@@ -267,11 +275,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                         if (uw6 != null) {
                                                             return responMessage.DUPLICATE("SERVICE LOCATION");
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 }
@@ -280,11 +288,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                     if (uw6 != null) {
                                                         return responMessage.DUPLICATE("SERVICE LOCATION");
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             }
@@ -303,11 +311,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                         if (uw6 != null) {
                                                             return responMessage.DUPLICATE("SERVICE LOCATION");
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 }
@@ -316,11 +324,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                     if (uw6 != null) {
                                                         return responMessage.DUPLICATE("SERVICE LOCATION");
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             }
@@ -334,11 +342,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                     if (uw6 != null) {
                                                         return responMessage.DUPLICATE("SERVICE LOCATION");
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             }
@@ -347,11 +355,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                 if (uw6 != null) {
                                                     return responMessage.DUPLICATE("SERVICE LOCATION");
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             } else {
-                                                save(unitWorking);
+                                                unitWorkingDao.save(unitWorking);
                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                             }
                                         }
@@ -380,11 +388,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                             if (uw6 != null) {
                                                                 return responMessage.DUPLICATE("SERVICE LOCATION");
                                                             } else {
-                                                                save(unitWorking);
+                                                                unitWorkingDao.save(unitWorking);
                                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                                             }
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     }
@@ -393,11 +401,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                         if (uw6 != null) {
                                                             return responMessage.DUPLICATE("SERVICE LOCATION");
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 }
@@ -411,11 +419,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                         if (uw6 != null) {
                                                             return responMessage.DUPLICATE("SERVICE LOCATION");
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 }
@@ -424,11 +432,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                     if (uw6 != null) {
                                                         return responMessage.DUPLICATE("SERVICE LOCATION");
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             }
@@ -447,11 +455,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                         if (uw6 != null) {
                                                             return responMessage.DUPLICATE("SERVICE LOCATION");
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 }
@@ -460,11 +468,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                     if (uw6 != null) {
                                                         return responMessage.DUPLICATE("SERVICE LOCATION");
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             }
@@ -478,11 +486,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                     if (uw6 != null) {
                                                         return responMessage.DUPLICATE("SERVICE LOCATION");
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             }
@@ -491,11 +499,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                 if (uw6 != null) {
                                                     return responMessage.DUPLICATE("SERVICE LOCATION");
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             } else {
-                                                save(unitWorking);
+                                                unitWorkingDao.save(unitWorking);
                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                             }
                                         }
@@ -519,11 +527,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                         if (uw6 != null) {
                                                             return responMessage.DUPLICATE("SERVICE LOCATION");
                                                         } else {
-                                                            save(unitWorking);
+                                                            unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 }
@@ -532,11 +540,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                     if (uw6 != null) {
                                                         return responMessage.DUPLICATE("SERVICE LOCATION");
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             }
@@ -550,11 +558,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                     if (uw6 != null) {
                                                         return responMessage.DUPLICATE("SERVICE LOCATION");
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             }
@@ -563,11 +571,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                 if (uw6 != null) {
                                                     return responMessage.DUPLICATE("SERVICE LOCATION");
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             } else {
-                                                save(unitWorking);
+                                                unitWorkingDao.save(unitWorking);
                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                             }
                                         }
@@ -586,11 +594,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                     if (uw6 != null) {
                                                         return responMessage.DUPLICATE("SERVICE LOCATION");
                                                     } else {
-                                                        save(unitWorking);
+                                                        unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             }
@@ -599,11 +607,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                 if (uw6 != null) {
                                                     return responMessage.DUPLICATE("SERVICE LOCATION");
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             } else {
-                                                save(unitWorking);
+                                                unitWorkingDao.save(unitWorking);
                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                             }
                                         }
@@ -617,11 +625,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                 if (uw6 != null) {
                                                     return responMessage.DUPLICATE("SERVICE LOCATION");
                                                 } else {
-                                                    save(unitWorking);
+                                                    unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             } else {
-                                                save(unitWorking);
+                                                unitWorkingDao.save(unitWorking);
                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                             }
                                         }
@@ -630,11 +638,11 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                             if (uw6 != null) {
                                                 return responMessage.DUPLICATE("SERVICE LOCATION");
                                             } else {
-                                                save(unitWorking);
+                                                unitWorkingDao.save(unitWorking);
                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                             }
                                         } else {
-                                            save(unitWorking);
+                                            unitWorkingDao.save(unitWorking);
                                             return responMessage.SUCCESS_PROCESS_DATA();
                                         }
                                     }

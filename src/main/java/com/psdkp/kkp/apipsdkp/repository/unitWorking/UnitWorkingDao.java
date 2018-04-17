@@ -19,8 +19,6 @@ public interface UnitWorkingDao extends PagingAndSortingRepository<UnitWorking, 
     UnitWorking findByPhone(String phone);
     UnitWorking findByFaxmail(String faxmail);
     UnitWorking findByEmail(String email);
-    UnitWorking findByLangitude(String langitude);
-    UnitWorking findByLongitude(String longitude);
     UnitWorking findByServiceLocation(String serviceLocation);
 
     @Query(value = "select * from unit_working uw where uw.id=?1", nativeQuery = true)
