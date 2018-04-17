@@ -1,6 +1,8 @@
 package com.psdkp.kkp.apipsdkp.service.unitWorking.impl;
 
+import com.psdkp.kkp.apipsdkp.domain.unitWorking.TypeUnit;
 import com.psdkp.kkp.apipsdkp.domain.unitWorking.UnitWorking;
+import com.psdkp.kkp.apipsdkp.repository.unitWorking.TypeUnitDao;
 import com.psdkp.kkp.apipsdkp.repository.unitWorking.UnitWorkingDao;
 import com.psdkp.kkp.apipsdkp.service.unitWorking.UnitWorkingService;
 import com.psdkp.kkp.apipsdkp.util.ResponMessage;
@@ -13,6 +15,9 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
 
     @Autowired
     private UnitWorkingDao unitWorkingDao;
+
+    @Autowired
+    private TypeUnitDao typeUnitDao;
 
     @Autowired
     private ResponMessage responMessage;
@@ -35,23 +40,13 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
             UnitWorking u6 = unitWorkingDao.findByLangitude(unitWorking.getLangitude());
             UnitWorking u7 = unitWorkingDao.findByLongitude(unitWorking.getLongitude());
             UnitWorking u8 = unitWorkingDao.findByServiceLocation(unitWorking.getServiceLocation());
-            UnitWorking u9 = unitWorkingDao.findByTypeUnit(unitWorking.getTypeUnit());
+            TypeUnit u9 = typeUnitDao.findId(unitWorking.getTypeUnit().getId());
 
             if (u9 == null) {
                 return responMessage.NOT_FOUND("UNIT TYPE");
-            } else if (u1 == null) {
+            } else if (u1 != null) {
                 return responMessage.DUPLICATE("KODE");
-            } /*else if (u2 != null) {
-                return responMessage.DUPLICATE("NAMA");
-            } else if (u3 != null) {
-                return responMessage.DUPLICATE("NO TELEPON");
-            } else if (u4 != null) {
-                return responMessage.DUPLICATE("FAKSIMILE");
-            } else if (u5 != null) {
-                return responMessage.DUPLICATE("EMAIL");
-            } else if (u8 != null) {
-                return responMessage.DUPLICATE("LOKASI PELAYANAN");
-            }*/ else {
+            } else {
                 unitWorkingDao.save(unitWorking);
                 return responMessage.SUCCESS_PROCESS_DATA();
             }
@@ -67,7 +62,7 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
 
             if (unitId != null) {
 
-                UnitWorking uw0 = unitWorkingDao.findByTypeUnit(unitWorking.getTypeUnit());
+                TypeUnit uw0 = typeUnitDao.findId(unitWorking.getTypeUnit().getId());
                 UnitWorking uw1 = unitWorkingDao.findByCode(unitWorking.getCode());
                 UnitWorking uw2 = unitWorkingDao.findByName(unitWorking.getName());
                 UnitWorking uw3 = unitWorkingDao.findByPhone(unitWorking.getPhone());
@@ -77,23 +72,577 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
 
                 if (uw0 == null) {
                     return responMessage.NOT_FOUND("UNIT TYPE");
-                } else if (uw1 != null) {
-                    return responMessage.DUPLICATE("KODE");
-                } else if (uw2 != null) {
-                    return responMessage.DUPLICATE("NAMA");
-                } else if (uw3 != null) {
-                    return responMessage.DUPLICATE("NO TELEPON");
-                } else if (uw4 != null) {
-                    return responMessage.DUPLICATE("FAKSIMILE");
-                } else if (uw5 != null) {
-                    return responMessage.DUPLICATE("EMAIL");
-                } else if (uw6 != null) {
-                    return responMessage.DUPLICATE("LOKASI PELAYANAN");
                 } else {
-                    unitWorkingDao.save(unitWorking);
-                    return responMessage.SUCCESS_PROCESS_DATA();
+                    if (!unitId.getCode().equals(unitWorking.getCode())) {
+                        if (uw1 != null) {
+                            return responMessage.DUPLICATE("CODE");
+                        } else {
+                            if (!unitId.getName().equals(unitWorking.getName())) {
+                                if (uw2 != null) {
+                                    return responMessage.DUPLICATE("NAME");
+                                } else {
+                                    if (!unitId.getPhone().equals(unitWorking.getPhone())) {
+                                        if (uw3 != null) {
+                                            return responMessage.DUPLICATE("PHONE");
+                                        } else {
+                                            if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                                if (uw4 != null) {
+                                                    return responMessage.DUPLICATE("FAXIMAIL");
+                                                } else {
+                                                    if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                        if (uw5 != null) {
+                                                            return responMessage.DUPLICATE("EMAIL");
+                                                        } else {
+                                                            if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                                if (uw6 != null) {
+                                                                    return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                                } else {
+                                                                    save(unitWorking);
+                                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                                }
+                                                            } else {
+                                                                save(unitWorking);
+                                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                                            }
+                                                        }
+                                                    } else {
+                                                        if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                            if (uw6 != null) {
+                                                                return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                            } else {
+                                                                save(unitWorking);
+                                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                                            }
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                    if (uw5 != null) {
+                                                        return responMessage.DUPLICATE("EMAIL");
+                                                    } else {
+                                                        if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                            if (uw6 != null) {
+                                                                return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                            } else {
+                                                                save(unitWorking);
+                                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                                            }
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    }
+                                                } else {
+                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                        if (uw6 != null) {
+                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                            if (uw4 != null) {
+                                                return responMessage.DUPLICATE("FAXIMAIL");
+                                            } else {
+                                                if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                    if (uw5 != null) {
+                                                        return responMessage.DUPLICATE("EMAIL");
+                                                    } else {
+                                                        if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                            if (uw6 != null) {
+                                                                return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                            } else {
+                                                                save(unitWorking);
+                                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                                            }
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    }
+                                                } else {
+                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                        if (uw6 != null) {
+                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                if (uw5 != null) {
+                                                    return responMessage.DUPLICATE("EMAIL");
+                                                } else {
+                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                        if (uw6 != null) {
+                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                }
+                                            } else {
+                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                    if (uw6 != null) {
+                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (!unitId.getPhone().equals(unitWorking.getPhone())) {
+                                    if (uw3 != null) {
+                                        return responMessage.DUPLICATE("PHONE");
+                                    } else {
+                                        if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                            if (uw4 != null) {
+                                                return responMessage.DUPLICATE("FAXIMAIL");
+                                            } else {
+                                                if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                    if (uw5 != null) {
+                                                        return responMessage.DUPLICATE("EMAIL");
+                                                    } else {
+                                                        if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                            if (uw6 != null) {
+                                                                return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                            } else {
+                                                                save(unitWorking);
+                                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                                            }
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    }
+                                                } else {
+                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                        if (uw6 != null) {
+                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                if (uw5 != null) {
+                                                    return responMessage.DUPLICATE("EMAIL");
+                                                } else {
+                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                        if (uw6 != null) {
+                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                }
+                                            } else {
+                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                    if (uw6 != null) {
+                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                        if (uw4 != null) {
+                                            return responMessage.DUPLICATE("FAXIMAIL");
+                                        } else {
+                                            if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                if (uw5 != null) {
+                                                    return responMessage.DUPLICATE("EMAIL");
+                                                } else {
+                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                        if (uw6 != null) {
+                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                }
+                                            } else {
+                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                    if (uw6 != null) {
+                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                            if (uw5 != null) {
+                                                return responMessage.DUPLICATE("EMAIL");
+                                            } else {
+                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                    if (uw6 != null) {
+                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            }
+                                        } else {
+                                            if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                if (uw6 != null) {
+                                                    return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            } else {
+                                                save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (!unitId.getName().equals(unitWorking.getName())) {
+                            if (uw2.getName() != null) {
+                                return responMessage.DUPLICATE("NAME");
+                            } else {
+                                if (!unitId.getPhone().equals(unitWorking.getPhone())) {
+                                    if (uw3 != null) {
+                                        return responMessage.DUPLICATE("PHONE");
+                                    } else {
+                                        if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                            if (uw4 != null) {
+                                                return responMessage.DUPLICATE("FAXIMAIL");
+                                            } else {
+                                                if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                    if (uw5 != null) {
+                                                        return responMessage.DUPLICATE("EMAIL");
+                                                    } else {
+                                                        if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                            if (uw6 != null) {
+                                                                return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                            } else {
+                                                                save(unitWorking);
+                                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                                            }
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    }
+                                                } else {
+                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                        if (uw6 != null) {
+                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                if (uw5 != null) {
+                                                    return responMessage.DUPLICATE("EMAIL");
+                                                } else {
+                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                        if (uw6 != null) {
+                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                }
+                                            } else {
+                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                    if (uw6 != null) {
+                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                        if (uw4 != null) {
+                                            return responMessage.DUPLICATE("FAXIMAIL");
+                                        } else {
+                                            if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                if (uw5 != null) {
+                                                    return responMessage.DUPLICATE("EMAIL");
+                                                } else {
+                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                        if (uw6 != null) {
+                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                }
+                                            } else {
+                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                    if (uw6 != null) {
+                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                            if (uw5 != null) {
+                                                return responMessage.DUPLICATE("EMAIL");
+                                            } else {
+                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                    if (uw6 != null) {
+                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            }
+                                        } else {
+                                            if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                if (uw6 != null) {
+                                                    return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            } else {
+                                                save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            if (!unitId.getPhone().equals(unitWorking.getPhone())) {
+                                if (uw3 != null) {
+                                    return responMessage.DUPLICATE("PHONE");
+                                } else {
+                                    if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                        if (uw4 != null) {
+                                            return responMessage.DUPLICATE("FAXIMAIL");
+                                        } else {
+                                            if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                if (uw5 != null) {
+                                                    return responMessage.DUPLICATE("EMAIL");
+                                                } else {
+                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                        if (uw6 != null) {
+                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                        } else {
+                                                            save(unitWorking);
+                                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                                        }
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                }
+                                            } else {
+                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                    if (uw6 != null) {
+                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                            if (uw5 != null) {
+                                                return responMessage.DUPLICATE("EMAIL");
+                                            } else {
+                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                    if (uw6 != null) {
+                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            }
+                                        } else {
+                                            if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                if (uw6 != null) {
+                                                    return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            } else {
+                                                save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                    if (uw4 != null) {
+                                        return responMessage.DUPLICATE("FAXIMAIL");
+                                    } else {
+                                        if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                            if (uw5 != null) {
+                                                return responMessage.DUPLICATE("EMAIL");
+                                            } else {
+                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                    if (uw6 != null) {
+                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                    } else {
+                                                        save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            }
+                                        } else {
+                                            if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                if (uw6 != null) {
+                                                    return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            } else {
+                                                save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                        if (uw5 != null) {
+                                            return responMessage.DUPLICATE("EMAIL");
+                                        } else {
+                                            if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                                if (uw6 != null) {
+                                                    return responMessage.DUPLICATE("SERVICE LOCATION");
+                                                } else {
+                                                    save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            } else {
+                                                save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                            }
+                                        }
+                                    } else {
+                                        if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
+                                            if (uw6 != null) {
+                                                return responMessage.DUPLICATE("SERVICE LOCATION");
+                                            } else {
+                                                save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                            }
+                                        } else {
+                                            save(unitWorking);
+                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-
             } else {
                 return responMessage.NOT_FOUND("ID");
             }
