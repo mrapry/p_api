@@ -7,6 +7,7 @@ import com.psdkp.kkp.apipsdkp.repository.unitWorking.UnitWorkingDao;
 import com.psdkp.kkp.apipsdkp.service.unitWorking.MappingUnitWorkingService;
 import com.psdkp.kkp.apipsdkp.util.ResponMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class MappingUnitWorkingServiceImpl implements MappingUnitWorkingService{
 
     @Override
     public Object findAll(String name, Pageable pageable) {
-        return responMessage.SUCCESS_GET(mappingUnitWorkingDao.findAllByType(name, pageable));
+        return responMessage.SUCCESS_GET(mappingUnitWorkingDao.findAll(pageable));
     }
 
     @Override
@@ -64,7 +65,7 @@ public class MappingUnitWorkingServiceImpl implements MappingUnitWorkingService{
 
     @Override
     public Object edit(MappingUnitWorking mappingUnitWorking) {
-        if (mappingUnitWorking.getId()!=null || mappingUnitWorking.getParrent().getId() !=null || mappingUnitWorking.getChild().getId() !=null){
+        if (mappingUnitWorking.getId()==null || mappingUnitWorking.getParrent().getId() ==null || mappingUnitWorking.getChild().getId() ==null){
             return responMessage.BAD_REUQEST();
         } else {
             MappingUnitWorking mapping = mappingUnitWorkingDao.findId(mappingUnitWorking.getId());
@@ -104,7 +105,8 @@ public class MappingUnitWorkingServiceImpl implements MappingUnitWorkingService{
 
     @Override
     public Object del(Integer id) {
-        if (id != null){
+        System.out.println("INI ID YANG DIKIRIM : "+id+"*****");
+        if (id == null){
             return responMessage.BAD_REUQEST();
         } else {
             MappingUnitWorking mapping = mappingUnitWorkingDao.findId(id);
@@ -121,5 +123,19 @@ public class MappingUnitWorkingServiceImpl implements MappingUnitWorkingService{
     public Object findById(Integer id) {
         MappingUnitWorking mapping = mappingUnitWorkingDao.findId(id);
         return responMessage.SUCCESS_GET(mapping);
+    }
+
+    @Override
+    public Object findByParrent(Integer id, Pageable pageable) {
+        if (id == null){
+            return responMessage.BAD_REUQEST();
+        } else {
+            Page<MappingUnitWorking> mappingUnitWorkings = mappingUnitWorkingDao.findAllByType(id, pageable);
+            if (mappingUnitWorkings != null){
+                return responMessage.SUCCESS_GET(mappingUnitWorkings);
+            } else {
+                return responMessage.NOT_FOUND("ID PARRENT");
+            }
+        }
     }
 }

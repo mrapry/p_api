@@ -18,10 +18,13 @@ public class UnitWorkingController {
     public Object getFindByName(
             @RequestParam(defaultValue = "", required = false) String name,
             @RequestParam(defaultValue = "", required = false) Integer id,
+            @RequestParam(defaultValue = "", required = false) Integer typeUnitId,
             Pageable pageable
     ) {
         if (id != null) {
             return unitWorkingService.findById(id);
+        } else if (typeUnitId != null){
+            return unitWorkingService.findByTypeUnit(typeUnitId, pageable);
         } else {
             return unitWorkingService.findAll(name, pageable);
         }

@@ -7,6 +7,7 @@ import com.psdkp.kkp.apipsdkp.repository.unitWorking.UnitWorkingDao;
 import com.psdkp.kkp.apipsdkp.service.unitWorking.UnitWorkingService;
 import com.psdkp.kkp.apipsdkp.util.ResponMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -679,6 +680,20 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
             return responMessage.SUCCESS_GET(unitWorkingDao.findById(id));
         } else {
             return responMessage.NOT_FOUND("ID");
+        }
+    }
+
+    @Override
+    public Object findByTypeUnit(Integer id, Pageable pageable) {
+        if (id != null){
+            Page<UnitWorking> unitWorking = unitWorkingDao.findByTypeUnit(id, pageable);
+            if (unitWorking!=null){
+                return responMessage.SUCCESS_GET(unitWorking);
+            } else {
+                return responMessage.NOT_FOUND("ID TYPE");
+            }
+        } else {
+            return responMessage.BAD_REUQEST();
         }
     }
 }

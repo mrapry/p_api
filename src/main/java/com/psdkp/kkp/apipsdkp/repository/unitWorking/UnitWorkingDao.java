@@ -21,6 +21,9 @@ public interface UnitWorkingDao extends PagingAndSortingRepository<UnitWorking, 
     UnitWorking findByEmail(String email);
     UnitWorking findByServiceLocation(String serviceLocation);
 
+    @Query(value = "select * from unit_working uw where uw.type_unit_id=?1", nativeQuery = true)
+    Page<UnitWorking> findByTypeUnit(Integer id, Pageable pageable);
+
     @Query(value = "select * from unit_working uw where uw.id=?1", nativeQuery = true)
     UnitWorking findId(Integer id);
 }

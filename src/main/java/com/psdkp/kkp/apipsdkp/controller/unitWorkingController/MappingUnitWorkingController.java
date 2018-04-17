@@ -18,10 +18,13 @@ public class MappingUnitWorkingController {
     public Object getFindByName(
             @RequestParam(defaultValue = "", required = false) String name,
             @RequestParam(defaultValue = "", required = false) Integer id,
+            @RequestParam(defaultValue = "", required = false) Integer parrentID,
             Pageable pageable
     ) {
         if (id != null) {
             return mappingUnitWorkingService.findById(id);
+        } else if (parrentID!=null) {
+            return mappingUnitWorkingService.findByParrent(parrentID, pageable);
         } else {
             return mappingUnitWorkingService.findAll(name, pageable);
         }
@@ -29,6 +32,7 @@ public class MappingUnitWorkingController {
 
     @PostMapping
     public Object saveUnitWorking(@RequestBody MappingUnitWorking unitWorking) {
+        System.out.println(unitWorking.toString());
         return mappingUnitWorkingService.save(unitWorking);
     }
 
@@ -39,6 +43,7 @@ public class MappingUnitWorkingController {
 
     @DeleteMapping(value = "/del")
     public Object removeUnitWorking(@RequestBody Input input){
+        System.out.println(input.getId());
         return mappingUnitWorkingService.del(input.getId());
     }
 }
