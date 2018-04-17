@@ -55,4 +55,13 @@ public class ResponMessage implements BaseUtil {
         m.put("data", null);
         return m;
     }
+
+    @Override
+    public Map NOT_ALLOW() {
+        m.clear();
+        m.put("code",AppConstants.C_NOT_ALLOW);
+        m.put("message",AppConstants.NOT_ALLOW);
+        m.put("data", null);
+        return m;
+    }
 }

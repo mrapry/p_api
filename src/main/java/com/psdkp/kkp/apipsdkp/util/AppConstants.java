@@ -12,6 +12,7 @@ public class AppConstants {
     public final static Integer C_NOT_FOUND = 404;
     public final static Integer C_DUPLICATE = 409;
     public final static Integer C_BAD_REQUEST = 400;
+    public final static Integer C_NOT_ALLOW = 405;
 
 
     /**
@@ -24,4 +25,5 @@ public class AppConstants {
     public final static String NOT_FOUND = "DATA TIDAK DITEMUKAN";
     public final static String DUPLICATE = "TERDAPAT DUPLIKASI DATA";
     public final static String BAD_REQUEST = "DATA TIDAK LENGKAP!";
+    public final static String NOT_ALLOW = "LEVEL AKSES TIDAK DIIJINKAN, CHILD BUKAN BERADA DIBAWAH PARRENT";
 }

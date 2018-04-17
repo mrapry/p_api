@@ -9,4 +9,5 @@ public interface BaseUtil {
     Map DUPLICATE(String atribut);
     Map SUCCESS_PROCESS_DATA();
     Map NOT_FOUND(String atribut);
+    Map NOT_ALLOW();
 }

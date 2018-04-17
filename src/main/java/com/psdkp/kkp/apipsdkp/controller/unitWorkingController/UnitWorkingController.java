@@ -29,13 +29,11 @@ public class UnitWorkingController {
 
     @PostMapping
     public Object saveUnitWorking(@RequestBody UnitWorking unitWorking) {
-        System.out.println(unitWorking.toString());
         return unitWorkingService.save(unitWorking);
     }
 
     @PutMapping
     public Object editUnitWorking(@RequestBody UnitWorking unitWorking){
-        System.out.println(unitWorking.toString());
         return unitWorkingService.edit(unitWorking);
     }
 
