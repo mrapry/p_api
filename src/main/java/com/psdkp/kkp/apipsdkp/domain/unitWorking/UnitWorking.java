@@ -3,6 +3,7 @@ package com.psdkp.kkp.apipsdkp.domain.unitWorking;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @Entity
@@ -24,5 +25,17 @@ public class UnitWorking {
     @ManyToOne
     @JoinColumn(name = "typeUnitId", referencedColumnName = "id", updatable = false)
     private TypeUnit typeUnit;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "sarana_unitWorking",
+            joinColumns = @JoinColumn(name = "unitWorking_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "facilities_id", referencedColumnName = "id"))
+    private Set<Facilities> facilities;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "infrastructure_unitWorking",
+            joinColumns = @JoinColumn(name = "unitWorking_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "infrastructure_id", referencedColumnName = "id"))
+    private Set<Infrastructure> infrastructures;
 
 }
