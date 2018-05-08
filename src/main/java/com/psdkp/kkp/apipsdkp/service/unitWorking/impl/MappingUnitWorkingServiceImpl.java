@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MappingUnitWorkingServiceImpl implements MappingUnitWorkingService{
+public class MappingUnitWorkingServiceImpl implements MappingUnitWorkingService {
 
     @Autowired
     private MappingUnitWorkingDao mappingUnitWorkingDao;
@@ -30,72 +30,68 @@ public class MappingUnitWorkingServiceImpl implements MappingUnitWorkingService{
 
     @Override
     public Object save(MappingUnitWorking mappingUnitWorking) {
-        if (mappingUnitWorking.getParrent().getId()==null|| mappingUnitWorking.getChild().getId()==null){
+        if (mappingUnitWorking.getParrent().getId() == null || mappingUnitWorking.getChild().getId() == null || mappingUnitWorking.getUpt().getId() == null) {
             return responMessage.BAD_REUQEST();
         } else {
             UnitWorking a = unitWorkingDao.findId(mappingUnitWorking.getParrent().getId());
             UnitWorking b = unitWorkingDao.findId(mappingUnitWorking.getChild().getId());
-            if (a !=null){
-                if (b != null){
-                    if (a.getTypeUnit().getType().equals("UPT")){
-                        if (b.getTypeUnit().getType().equals("SATWAS")){
+            UnitWorking c = unitWorkingDao.findId(mappingUnitWorking.getUpt().getId());
+
+            if (c != null) {
+                if (a != null) {
+                    if (b != null) {
+                        if (a.getTypeUnit().getType().equals("UPT")) {
                             mappingUnitWorkingDao.save(mappingUnitWorking);
                             return responMessage.SUCCESS_PROCESS_DATA();
-                        } else {
-                            return responMessage.NOT_ALLOW();
-                        }
-                    } else if (a.getTypeUnit().getType().equals("SATWAS")){
-                        if (b.getTypeUnit().getType().equals("WILKER")){
+                        } else if (a.getTypeUnit().getType().equals("SATWAS")){
                             mappingUnitWorkingDao.save(mappingUnitWorking);
                             return responMessage.SUCCESS_PROCESS_DATA();
-                        } else {
+                        } else{
                             return responMessage.NOT_ALLOW();
                         }
-                    } else {
-                        return responMessage.NOT_ALLOW();
+                    }else{
+                        return responMessage.NOT_FOUND("ID CHILD");
                     }
-                } else {
-                    return responMessage.NOT_FOUND("ID CHILD");
+                }else{
+                    return responMessage.NOT_FOUND("ID PARRENT");
                 }
             } else {
-                return responMessage.NOT_FOUND("ID PARRENT");
+                return responMessage.NOT_FOUND("ID UPT");
             }
         }
     }
 
     @Override
     public Object edit(MappingUnitWorking mappingUnitWorking) {
-        if (mappingUnitWorking.getId()==null || mappingUnitWorking.getParrent().getId() ==null || mappingUnitWorking.getChild().getId() ==null){
+        if (mappingUnitWorking.getId() == null || mappingUnitWorking.getParrent().getId() == null || mappingUnitWorking.getChild().getId() == null) {
             return responMessage.BAD_REUQEST();
         } else {
             MappingUnitWorking mapping = mappingUnitWorkingDao.findId(mappingUnitWorking.getId());
-            if (mapping !=null){
+            if (mapping != null) {
                 UnitWorking a = unitWorkingDao.findId(mappingUnitWorking.getParrent().getId());
                 UnitWorking b = unitWorkingDao.findId(mappingUnitWorking.getChild().getId());
-                if (a !=null){
-                    if (b != null){
-                        if (a.getTypeUnit().getType().equals("UPT")){
-                            if (b.getTypeUnit().getType().equals("SATWAS")){
+                UnitWorking c = unitWorkingDao.findId(mappingUnitWorking.getUpt().getId());
+
+                if (c != null) {
+                    if (a != null) {
+                        if (b != null) {
+                            if (a.getTypeUnit().getType().equals("UPT")) {
                                 mappingUnitWorkingDao.save(mappingUnitWorking);
                                 return responMessage.SUCCESS_PROCESS_DATA();
-                            } else {
-                                return responMessage.NOT_ALLOW();
-                            }
-                        } else if (a.getTypeUnit().getType().equals("SATWAS")){
-                            if (b.getTypeUnit().getType().equals("WILKER")){
+                            } else if (a.getTypeUnit().getType().equals("SATWAS")){
                                 mappingUnitWorkingDao.save(mappingUnitWorking);
                                 return responMessage.SUCCESS_PROCESS_DATA();
-                            } else {
+                            } else{
                                 return responMessage.NOT_ALLOW();
                             }
-                        } else {
-                            return responMessage.NOT_ALLOW();
+                        }else{
+                            return responMessage.NOT_FOUND("ID CHILD");
                         }
-                    } else {
-                        return responMessage.NOT_FOUND("ID CHILD");
+                    }else{
+                        return responMessage.NOT_FOUND("ID PARRENT");
                     }
                 } else {
-                    return responMessage.NOT_FOUND("ID PARRENT");
+                    return responMessage.NOT_FOUND("ID UPT");
                 }
             } else {
                 return responMessage.NOT_FOUND("ID");
@@ -105,12 +101,11 @@ public class MappingUnitWorkingServiceImpl implements MappingUnitWorkingService{
 
     @Override
     public Object del(Integer id) {
-        System.out.println("INI ID YANG DIKIRIM : "+id+"*****");
-        if (id == null){
+        if (id == null) {
             return responMessage.BAD_REUQEST();
         } else {
             MappingUnitWorking mapping = mappingUnitWorkingDao.findId(id);
-            if (mapping != null){
+            if (mapping != null) {
                 mappingUnitWorkingDao.deleteById(id);
                 return responMessage.SUCCESS_PROCESS_DATA();
             } else {
@@ -127,14 +122,28 @@ public class MappingUnitWorkingServiceImpl implements MappingUnitWorkingService{
 
     @Override
     public Object findByParrent(Integer id, Pageable pageable) {
-        if (id == null){
+        if (id == null) {
             return responMessage.BAD_REUQEST();
         } else {
             Page<MappingUnitWorking> mappingUnitWorkings = mappingUnitWorkingDao.findAllByType(id, pageable);
-            if (mappingUnitWorkings != null){
+            if (mappingUnitWorkings != null) {
                 return responMessage.SUCCESS_GET(mappingUnitWorkings);
             } else {
                 return responMessage.NOT_FOUND("ID PARRENT");
+            }
+        }
+    }
+
+    @Override
+    public Object findByUpt(Integer id, Pageable pageable) {
+        if (id == null) {
+            return responMessage.BAD_REUQEST();
+        } else {
+            Page<MappingUnitWorking> mappingUnitWorkings = mappingUnitWorkingDao.findByUptId(id, pageable);
+            if (mappingUnitWorkings != null) {
+                return responMessage.SUCCESS_GET(mappingUnitWorkings);
+            } else {
+                return responMessage.NOT_FOUND("ID UPT");
             }
         }
     }

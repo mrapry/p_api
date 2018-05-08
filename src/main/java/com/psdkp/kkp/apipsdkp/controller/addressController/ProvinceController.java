@@ -30,6 +30,7 @@ public class ProvinceController {
 
     @PostMapping
     public Object saveProvince(@RequestBody Province province){
+        System.out.println(province.toString());
         return provinceService.save(province);
     }
 

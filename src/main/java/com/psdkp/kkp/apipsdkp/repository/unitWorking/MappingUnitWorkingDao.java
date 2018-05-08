@@ -16,6 +16,9 @@ public interface MappingUnitWorkingDao extends JpaRepository<MappingUnitWorking,
     @Query(value = "select * from mapping_unit_working tu where tu.id=?1", nativeQuery = true)
     MappingUnitWorking findId(Integer id);
 
+    @Query(value = "select * from mapping_unit_working a where a.upt_id=?1", nativeQuery = true)
+    Page<MappingUnitWorking> findByUptId(Integer id, Pageable pageable);
+
     @Query(value = "select * from mapping_unit_working a where a.parrent_id=?1", nativeQuery = true)
     Page<MappingUnitWorking> findAllByType(Integer id, Pageable pageable);
 

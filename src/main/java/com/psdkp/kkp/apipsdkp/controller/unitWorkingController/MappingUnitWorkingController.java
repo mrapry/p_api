@@ -18,14 +18,17 @@ public class MappingUnitWorkingController {
     public Object getFindByName(
             @RequestParam(defaultValue = "", required = false) String name,
             @RequestParam(defaultValue = "", required = false) Integer id,
-            @RequestParam(defaultValue = "", required = false) Integer parrentID,
+            @RequestParam(defaultValue = "", required = false) Integer parrentId,
+            @RequestParam(defaultValue = "", required = false) Integer uptId,
             Pageable pageable
     ) {
         if (id != null) {
             return mappingUnitWorkingService.findById(id);
-        } else if (parrentID!=null) {
-            return mappingUnitWorkingService.findByParrent(parrentID, pageable);
-        } else {
+        } else if (parrentId!=null) {
+            return mappingUnitWorkingService.findByParrent(parrentId, pageable);
+        } else if (uptId!=null){
+            return mappingUnitWorkingService.findByUpt(uptId, pageable);
+        }else {
             return mappingUnitWorkingService.findAll(name, pageable);
         }
     }

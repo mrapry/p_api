@@ -1,7 +1,9 @@
 package com.psdkp.kkp.apipsdkp.service.unitWorking.impl;
 
+import com.psdkp.kkp.apipsdkp.domain.address.City;
 import com.psdkp.kkp.apipsdkp.domain.unitWorking.TypeUnit;
 import com.psdkp.kkp.apipsdkp.domain.unitWorking.UnitWorking;
+import com.psdkp.kkp.apipsdkp.repository.address.CityDao;
 import com.psdkp.kkp.apipsdkp.repository.unitWorking.TypeUnitDao;
 import com.psdkp.kkp.apipsdkp.repository.unitWorking.UnitWorkingDao;
 import com.psdkp.kkp.apipsdkp.service.unitWorking.UnitWorkingService;
@@ -23,6 +25,9 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
     @Autowired
     private ResponMessage responMessage;
 
+    @Autowired
+    private CityDao cityDao;
+
     @Override
     public Object findAll(String name, Pageable pageable) {
         return responMessage.SUCCESS_GET(unitWorkingDao.findAllByName(name, pageable));
@@ -36,25 +41,36 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
             UnitWorking u1 = unitWorkingDao.findByCode(unitWorking.getCode());
             UnitWorking u2 = unitWorkingDao.findByName(unitWorking.getName());
             UnitWorking u3 = unitWorkingDao.findByPhone(unitWorking.getPhone());
-            UnitWorking u4 = unitWorkingDao.findByFaxmail(unitWorking.getFaxmail());
+            UnitWorking u4 = unitWorkingDao.findByFacsimile(unitWorking.getFacsimile());
             UnitWorking u5 = unitWorkingDao.findByEmail(unitWorking.getEmail());
-            UnitWorking u8 = unitWorkingDao.findByServiceLocation(unitWorking.getServiceLocation());
             TypeUnit u9 = typeUnitDao.findId(unitWorking.getTypeUnit().getId());
+            City u10 = cityDao.findId(unitWorking.getCity().getId());
 
             if (u9 == null) {
                 return responMessage.NOT_FOUND("UNIT TYPE");
             } else if (u1 != null) {
                 return responMessage.DUPLICATE("KODE");
-            } else if (u2 != null){
+            } else if (u2 != null) {
                 return responMessage.DUPLICATE("NAME");
-            } else if (u3 != null){
+            } else if (u3 != null) {
                 return responMessage.DUPLICATE("PHONE");
-            } else if (u4 != null){
-                return responMessage.DUPLICATE("FAXIMAIL");
-            } else if (u5 !=null){
+            } else if (!unitWorking.getFacsimile().equals("-")) {
+                if (u4 != null) {
+                    return responMessage.DUPLICATE("FACSIMILE");
+                } else {
+                    if (u5 != null) {
+                        return responMessage.DUPLICATE("EMAIL");
+                    } else if (u10 == null) {
+                        return responMessage.NOT_FOUND("ID CITY");
+                    } else {
+                        unitWorkingDao.save(unitWorking);
+                        return responMessage.SUCCESS_PROCESS_DATA();
+                    }
+                }
+            } else if (u5 != null) {
                 return responMessage.DUPLICATE("EMAIL");
-            } else if (u8 != null){
-                return responMessage.DUPLICATE("SERVICE LOCATION");
+            } else if (u10 == null) {
+                return responMessage.NOT_FOUND("ID CITY");
             } else {
                 unitWorkingDao.save(unitWorking);
                 return responMessage.SUCCESS_PROCESS_DATA();
@@ -64,7 +80,7 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
 
     @Override
     public Object edit(UnitWorking unitWorking) {
-        if (unitWorking.getId() == null || unitWorking.getCode().equals("") || unitWorking.getName().equals("") || unitWorking.getPhone().equals("") || unitWorking.getFaxmail().equals("") || unitWorking.getEmail().equals("") || unitWorking.getLangitude().equals("") || unitWorking.getLongitude().equals("") || unitWorking.getServiceLocation().equals("")) {
+        if (unitWorking.getId() == null || unitWorking.getCode().equals("") || unitWorking.getName().equals("") || unitWorking.getPhone().equals("") || unitWorking.getFacsimile().equals("") || unitWorking.getEmail().equals("") || unitWorking.getLatitude().equals("") || unitWorking.getLongitude().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
             UnitWorking unitId = unitWorkingDao.findId(unitWorking.getId());
@@ -75,9 +91,9 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                 UnitWorking uw1 = unitWorkingDao.findByCode(unitWorking.getCode());
                 UnitWorking uw2 = unitWorkingDao.findByName(unitWorking.getName());
                 UnitWorking uw3 = unitWorkingDao.findByPhone(unitWorking.getPhone());
-                UnitWorking uw4 = unitWorkingDao.findByFaxmail(unitWorking.getFaxmail());
+                UnitWorking uw4 = unitWorkingDao.findByFacsimile(unitWorking.getFacsimile());
                 UnitWorking uw5 = unitWorkingDao.findByEmail(unitWorking.getEmail());
-                UnitWorking uw6 = unitWorkingDao.findByServiceLocation(unitWorking.getServiceLocation());
+                City u10 = cityDao.findId(unitWorking.getCity().getId());
 
                 if (uw0 == null) {
                     return responMessage.NOT_FOUND("UNIT TYPE");
@@ -94,128 +110,26 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                         if (uw3 != null) {
                                             return responMessage.DUPLICATE("PHONE");
                                         } else {
-                                            if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                            if (!unitWorking.getFacsimile().equals("-") && !unitId.getFacsimile().equals(unitWorking.getFacsimile())) {
                                                 if (uw4 != null) {
-                                                    return responMessage.DUPLICATE("FAXIMAIL");
+                                                    return responMessage.DUPLICATE("FACSIMILE");
                                                 } else {
                                                     if (!unitId.getEmail().equals(unitWorking.getEmail())) {
                                                         if (uw5 != null) {
                                                             return responMessage.DUPLICATE("EMAIL");
                                                         } else {
-                                                            if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                                if (uw6 != null) {
-                                                                    return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                                } else {
-                                                                    unitWorkingDao.save(unitWorking);
-                                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                                }
-                                                            } else {
-                                                                unitWorkingDao.save(unitWorking);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        }
-                                                    } else {
-                                                        if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                            if (uw6 != null) {
-                                                                return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                            } else {
-                                                                unitWorkingDao.save(unitWorking);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
                                                             unitWorkingDao.save(unitWorking);
                                                             return responMessage.SUCCESS_PROCESS_DATA();
                                                         }
+                                                    } else {
+                                                        unitWorkingDao.save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
                                                 }
                                             } else {
                                                 if (!unitId.getEmail().equals(unitWorking.getEmail())) {
                                                     if (uw5 != null) {
                                                         return responMessage.DUPLICATE("EMAIL");
-                                                    } else {
-                                                        if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                            if (uw6 != null) {
-                                                                return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                            } else {
-                                                                unitWorkingDao.save(unitWorking);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                        if (uw6 != null) {
-                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
-                                            if (uw4 != null) {
-                                                return responMessage.DUPLICATE("FAXIMAIL");
-                                            } else {
-                                                if (!unitId.getEmail().equals(unitWorking.getEmail())) {
-                                                    if (uw5 != null) {
-                                                        return responMessage.DUPLICATE("EMAIL");
-                                                    } else {
-                                                        if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                            if (uw6 != null) {
-                                                                return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                            } else {
-                                                                unitWorkingDao.save(unitWorking);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                        if (uw6 != null) {
-                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            if (!unitId.getEmail().equals(unitWorking.getEmail())) {
-                                                if (uw5 != null) {
-                                                    return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                        if (uw6 != null) {
-                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                    if (uw6 != null) {
-                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
                                                     } else {
                                                         unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
@@ -224,6 +138,36 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                     unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
+                                            }
+                                        }
+                                    } else {
+                                        if (!unitWorking.getFacsimile().equals("-") && !unitId.getFacsimile().equals(unitWorking.getFacsimile())) {
+                                            if (uw4 != null) {
+                                                return responMessage.DUPLICATE("FACSIMILE");
+                                            } else {
+                                                if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                    if (uw5 != null) {
+                                                        return responMessage.DUPLICATE("EMAIL");
+                                                    } else {
+                                                        unitWorkingDao.save(unitWorking);
+                                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                                    }
+                                                } else {
+                                                    unitWorkingDao.save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            }
+                                        } else {
+                                            if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                if (uw5 != null) {
+                                                    return responMessage.DUPLICATE("EMAIL");
+                                                } else {
+                                                    unitWorkingDao.save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            } else {
+                                                unitWorkingDao.save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
                                             }
                                         }
                                     }
@@ -233,62 +177,14 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                     if (uw3 != null) {
                                         return responMessage.DUPLICATE("PHONE");
                                     } else {
-                                        if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                        if (!unitWorking.getFacsimile().equals("-") && !unitId.getFacsimile().equals(unitWorking.getFacsimile())) {
                                             if (uw4 != null) {
-                                                return responMessage.DUPLICATE("FAXIMAIL");
+                                                return responMessage.DUPLICATE("FACSIMILE");
                                             } else {
                                                 if (!unitId.getEmail().equals(unitWorking.getEmail())) {
                                                     if (uw5 != null) {
                                                         return responMessage.DUPLICATE("EMAIL");
                                                     } else {
-                                                        if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                            if (uw6 != null) {
-                                                                return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                            } else {
-                                                                unitWorkingDao.save(unitWorking);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                        if (uw6 != null) {
-                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            if (!unitId.getEmail().equals(unitWorking.getEmail())) {
-                                                if (uw5 != null) {
-                                                    return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                        if (uw6 != null) {
-                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                    if (uw6 != null) {
-                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                    } else {
                                                         unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
@@ -296,65 +192,30 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                     unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
+                                            }
+                                        } else {
+                                            if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                if (uw5 != null) {
+                                                    return responMessage.DUPLICATE("EMAIL");
+                                                } else {
+                                                    unitWorkingDao.save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            } else {
+                                                unitWorkingDao.save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+
                                             }
                                         }
                                     }
                                 } else {
-                                    if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                    if (!unitWorking.getFacsimile().equals("-") && !unitId.getFacsimile().equals(unitWorking.getFacsimile())) {
                                         if (uw4 != null) {
-                                            return responMessage.DUPLICATE("FAXIMAIL");
+                                            return responMessage.DUPLICATE("FACSIMILE");
                                         } else {
                                             if (!unitId.getEmail().equals(unitWorking.getEmail())) {
                                                 if (uw5 != null) {
                                                     return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                        if (uw6 != null) {
-                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                    if (uw6 != null) {
-                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    unitWorkingDao.save(unitWorking);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        if (!unitId.getEmail().equals(unitWorking.getEmail())) {
-                                            if (uw5 != null) {
-                                                return responMessage.DUPLICATE("EMAIL");
-                                            } else {
-                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                    if (uw6 != null) {
-                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    unitWorkingDao.save(unitWorking);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        } else {
-                                            if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                if (uw6 != null) {
-                                                    return responMessage.DUPLICATE("SERVICE LOCATION");
                                                 } else {
                                                     unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
@@ -363,6 +224,18 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                 unitWorkingDao.save(unitWorking);
                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                             }
+                                        }
+                                    } else {
+                                        if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                            if (uw5 != null) {
+                                                return responMessage.DUPLICATE("EMAIL");
+                                            } else {
+                                                unitWorkingDao.save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                            }
+                                        } else {
+                                            unitWorkingDao.save(unitWorking);
+                                            return responMessage.SUCCESS_PROCESS_DATA();
                                         }
                                     }
                                 }
@@ -377,128 +250,26 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                     if (uw3 != null) {
                                         return responMessage.DUPLICATE("PHONE");
                                     } else {
-                                        if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                        if (!unitWorking.getFacsimile().equals("-") && !unitId.getFacsimile().equals(unitWorking.getFacsimile())) {
                                             if (uw4 != null) {
-                                                return responMessage.DUPLICATE("FAXIMAIL");
+                                                return responMessage.DUPLICATE("FACSIMILE");
                                             } else {
                                                 if (!unitId.getEmail().equals(unitWorking.getEmail())) {
                                                     if (uw5 != null) {
                                                         return responMessage.DUPLICATE("EMAIL");
                                                     } else {
-                                                        if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                            if (uw6 != null) {
-                                                                return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                            } else {
-                                                                unitWorkingDao.save(unitWorking);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                        if (uw6 != null) {
-                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
                                                         unitWorkingDao.save(unitWorking);
                                                         return responMessage.SUCCESS_PROCESS_DATA();
                                                     }
+                                                } else {
+                                                    unitWorkingDao.save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
                                             }
                                         } else {
                                             if (!unitId.getEmail().equals(unitWorking.getEmail())) {
                                                 if (uw5 != null) {
                                                     return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                        if (uw6 != null) {
-                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                    if (uw6 != null) {
-                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    unitWorkingDao.save(unitWorking);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
-                                        if (uw4 != null) {
-                                            return responMessage.DUPLICATE("FAXIMAIL");
-                                        } else {
-                                            if (!unitId.getEmail().equals(unitWorking.getEmail())) {
-                                                if (uw5 != null) {
-                                                    return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                        if (uw6 != null) {
-                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                    if (uw6 != null) {
-                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    unitWorkingDao.save(unitWorking);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        if (!unitId.getEmail().equals(unitWorking.getEmail())) {
-                                            if (uw5 != null) {
-                                                return responMessage.DUPLICATE("EMAIL");
-                                            } else {
-                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                    if (uw6 != null) {
-                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    unitWorkingDao.save(unitWorking);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        } else {
-                                            if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                if (uw6 != null) {
-                                                    return responMessage.DUPLICATE("SERVICE LOCATION");
                                                 } else {
                                                     unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
@@ -507,6 +278,36 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                                 unitWorkingDao.save(unitWorking);
                                                 return responMessage.SUCCESS_PROCESS_DATA();
                                             }
+                                        }
+                                    }
+                                } else {
+                                    if (!unitWorking.getFacsimile().equals("-") && !unitId.getFacsimile().equals(unitWorking.getFacsimile())) {
+                                        if (uw4 != null) {
+                                            return responMessage.DUPLICATE("FACSIMILE");
+                                        } else {
+                                            if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                                if (uw5 != null) {
+                                                    return responMessage.DUPLICATE("EMAIL");
+                                                } else {
+                                                    unitWorkingDao.save(unitWorking);
+                                                    return responMessage.SUCCESS_PROCESS_DATA();
+                                                }
+                                            } else {
+                                                unitWorkingDao.save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                            }
+                                        }
+                                    } else {
+                                        if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                            if (uw5 != null) {
+                                                return responMessage.DUPLICATE("EMAIL");
+                                            } else {
+                                                unitWorkingDao.save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                            }
+                                        } else {
+                                            unitWorkingDao.save(unitWorking);
+                                            return responMessage.SUCCESS_PROCESS_DATA();
                                         }
                                     }
                                 }
@@ -516,128 +317,26 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                 if (uw3 != null) {
                                     return responMessage.DUPLICATE("PHONE");
                                 } else {
-                                    if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
+                                    if (!unitWorking.getFacsimile().equals("-") && !unitId.getFacsimile().equals(unitWorking.getFacsimile())) {
                                         if (uw4 != null) {
-                                            return responMessage.DUPLICATE("FAXIMAIL");
+                                            return responMessage.DUPLICATE("FACSIMILE");
                                         } else {
                                             if (!unitId.getEmail().equals(unitWorking.getEmail())) {
                                                 if (uw5 != null) {
                                                     return responMessage.DUPLICATE("EMAIL");
                                                 } else {
-                                                    if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                        if (uw6 != null) {
-                                                            return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                        } else {
-                                                            unitWorkingDao.save(unitWorking);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                    if (uw6 != null) {
-                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
                                                     unitWorkingDao.save(unitWorking);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
+                                            } else {
+                                                unitWorkingDao.save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
                                             }
                                         }
                                     } else {
                                         if (!unitId.getEmail().equals(unitWorking.getEmail())) {
                                             if (uw5 != null) {
                                                 return responMessage.DUPLICATE("EMAIL");
-                                            } else {
-                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                    if (uw6 != null) {
-                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    unitWorkingDao.save(unitWorking);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        } else {
-                                            if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                if (uw6 != null) {
-                                                    return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                } else {
-                                                    unitWorkingDao.save(unitWorking);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            } else {
-                                                unitWorkingDao.save(unitWorking);
-                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                            }
-                                        }
-                                    }
-                                }
-                            } else {
-                                if (!unitWorking.getFaxmail().equals("-") && !unitId.getFaxmail().equals(unitWorking.getFaxmail())) {
-                                    if (uw4 != null) {
-                                        return responMessage.DUPLICATE("FAXIMAIL");
-                                    } else {
-                                        if (!unitId.getEmail().equals(unitWorking.getEmail())) {
-                                            if (uw5 != null) {
-                                                return responMessage.DUPLICATE("EMAIL");
-                                            } else {
-                                                if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                    if (uw6 != null) {
-                                                        return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                    } else {
-                                                        unitWorkingDao.save(unitWorking);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    unitWorkingDao.save(unitWorking);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        } else {
-                                            if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                if (uw6 != null) {
-                                                    return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                } else {
-                                                    unitWorkingDao.save(unitWorking);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            } else {
-                                                unitWorkingDao.save(unitWorking);
-                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (!unitId.getEmail().equals(unitWorking.getEmail())) {
-                                        if (uw5 != null) {
-                                            return responMessage.DUPLICATE("EMAIL");
-                                        } else {
-                                            if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                                if (uw6 != null) {
-                                                    return responMessage.DUPLICATE("SERVICE LOCATION");
-                                                } else {
-                                                    unitWorkingDao.save(unitWorking);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            } else {
-                                                unitWorkingDao.save(unitWorking);
-                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                            }
-                                        }
-                                    } else {
-                                        if (!unitId.getServiceLocation().equals(unitWorking.getServiceLocation())) {
-                                            if (uw6 != null) {
-                                                return responMessage.DUPLICATE("SERVICE LOCATION");
                                             } else {
                                                 unitWorkingDao.save(unitWorking);
                                                 return responMessage.SUCCESS_PROCESS_DATA();
@@ -646,6 +345,36 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
                                             unitWorkingDao.save(unitWorking);
                                             return responMessage.SUCCESS_PROCESS_DATA();
                                         }
+                                    }
+                                }
+                            } else {
+                                if (!unitWorking.getFacsimile().equals("-") && !unitId.getFacsimile().equals(unitWorking.getFacsimile())) {
+                                    if (uw4 != null) {
+                                        return responMessage.DUPLICATE("FACSIMILE");
+                                    } else {
+                                        if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                            if (uw5 != null) {
+                                                return responMessage.DUPLICATE("EMAIL");
+                                            } else {
+                                                unitWorkingDao.save(unitWorking);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                            }
+                                        } else {
+                                            unitWorkingDao.save(unitWorking);
+                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                        }
+                                    }
+                                } else {
+                                    if (!unitId.getEmail().equals(unitWorking.getEmail())) {
+                                        if (uw5 != null) {
+                                            return responMessage.DUPLICATE("EMAIL");
+                                        } else {
+                                            unitWorkingDao.save(unitWorking);
+                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                        }
+                                    } else {
+                                        unitWorkingDao.save(unitWorking);
+                                        return responMessage.SUCCESS_PROCESS_DATA();
                                     }
                                 }
                             }
@@ -685,9 +414,9 @@ public class UnitWorkingServiceImpl implements UnitWorkingService {
 
     @Override
     public Object findByTypeUnit(Integer id, Pageable pageable) {
-        if (id != null){
+        if (id != null) {
             Page<UnitWorking> unitWorking = unitWorkingDao.findByTypeUnit(id, pageable);
-            if (unitWorking!=null){
+            if (unitWorking != null) {
                 return responMessage.SUCCESS_GET(unitWorking);
             } else {
                 return responMessage.NOT_FOUND("ID TYPE");

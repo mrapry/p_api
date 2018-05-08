@@ -17,9 +17,8 @@ public interface UnitWorkingDao extends PagingAndSortingRepository<UnitWorking, 
     UnitWorking findByCode(String code);
     UnitWorking findByName(String name);
     UnitWorking findByPhone(String phone);
-    UnitWorking findByFaxmail(String faxmail);
+    UnitWorking findByFacsimile(String facsimile);
     UnitWorking findByEmail(String email);
-    UnitWorking findByServiceLocation(String serviceLocation);
 
     @Query(value = "select * from unit_working uw where uw.type_unit_id=?1", nativeQuery = true)
     Page<UnitWorking> findByTypeUnit(Integer id, Pageable pageable);

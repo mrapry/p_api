@@ -13,10 +13,15 @@ public class MappingUnitWorking {
     private Integer id;
 
     @ManyToOne
+    @JoinColumn (name = "uptId", referencedColumnName = "id", updatable = true)
+    private UnitWorking upt;
+
+    @ManyToOne
     @JoinColumn (name = "parrentId", referencedColumnName = "id", updatable = true)
     private UnitWorking parrent;
 
     @ManyToOne
     @JoinColumn (name = "childId", referencedColumnName = "id", updatable = true)
     private UnitWorking child;
+
 }
