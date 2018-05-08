@@ -48,24 +48,16 @@ public class DistrictServiceImpl implements DistrictService {
         if (district.getId() == null || district.getName().equals("") || district.getCode().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
-            District pCode = districtDao.findId(district.getId());
-            if (pCode != null) {
-                if (district.getCode().equals(pCode.getCode())) {
-                    District p2 = districtDao.findByName(district.getName());
-                    if (p2 != null) {
-                        return responMessage.DUPLICATE("NAMA");
+            District cId = districtDao.findId(district.getId());
+            if (cId != null) {
+                District dCode = districtDao.findByCode(district.getCode());
+                if (!cId.getCode().equals(district.getCode())) {
+                    if (dCode != null) {
+                        return responMessage.DUPLICATE("KODE");
                     } else {
-                        districtDao.save(district);
-                        return responMessage.SUCCESS_PROCESS_DATA();
-                    }
-                } else {
-                    District proCode = districtDao.findByCode(district.getCode());
-                    if (proCode != null) {
-                        return responMessage.DUPLICATE("CODE");
-                    } else {
-                        if (!district.getName().equals(pCode.getName())) {
-                            District p2 = districtDao.findByName(district.getName());
-                            if (p2 != null) {
+                        District dName = districtDao.findByName(district.getName());
+                        if (!cId.getName().equals(district.getName())) {
+                            if (dName != null) {
                                 return responMessage.DUPLICATE("NAMA");
                             } else {
                                 districtDao.save(district);
@@ -75,6 +67,19 @@ public class DistrictServiceImpl implements DistrictService {
                             districtDao.save(district);
                             return responMessage.SUCCESS_PROCESS_DATA();
                         }
+                    }
+                } else {
+                    District dName = districtDao.findByName(district.getName());
+                    if (!cId.getName().equals(district.getName())) {
+                        if (dName != null) {
+                            return responMessage.DUPLICATE("NAMA");
+                        } else {
+                            districtDao.save(district);
+                            return responMessage.SUCCESS_PROCESS_DATA();
+                        }
+                    } else {
+                        districtDao.save(district);
+                        return responMessage.SUCCESS_PROCESS_DATA();
                     }
                 }
             } else {
