@@ -10,4 +10,7 @@ public interface BaseUtil {
     Map SUCCESS_PROCESS_DATA();
     Map NOT_FOUND(String atribut);
     Map NOT_ALLOW();
+    Map POSTCODE_NOT_ALLOW();
+    Map CALENDAR_NOT_ALLOW();
+    Map VALUE_NOT_ALLOW();
 }

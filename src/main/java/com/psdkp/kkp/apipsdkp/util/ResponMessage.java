@@ -64,4 +64,31 @@ public class ResponMessage implements BaseUtil {
         m.put("data", null);
         return m;
     }
+
+    @Override
+    public Map POSTCODE_NOT_ALLOW() {
+        m.clear();
+        m.put("code",AppConstants.C_ZIPCODE_NOT_ALLOW);
+        m.put("message",AppConstants.ZIPCODE_NOT_ALLOW);
+        m.put("data", null);
+        return m;
+    }
+
+    @Override
+    public Map CALENDAR_NOT_ALLOW() {
+        m.clear();
+        m.put("code",AppConstants.C_CALENDAR_NOT_ALLOW);
+        m.put("message",AppConstants.CALENDAR_NOT_ALLOW);
+        m.put("data", null);
+        return m;
+    }
+
+    @Override
+    public Map VALUE_NOT_ALLOW() {
+        m.clear();
+        m.put("code",AppConstants.C_VALUE_NOT_ALLOW);
+        m.put("message",AppConstants.VALUE_NOT_ALLOW);
+        m.put("data", null);
+        return m;
+    }
 }
