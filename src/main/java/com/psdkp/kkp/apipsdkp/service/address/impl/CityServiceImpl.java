@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CityServiceImpl implements CityService{
+public class CityServiceImpl implements CityService {
 
     @Autowired
     private CityDao cityDao;
@@ -26,15 +26,15 @@ public class CityServiceImpl implements CityService{
 
     @Override
     public Object save(City city) {
-        if (city.getName().equals("")||city.getCode().equals("")){
+        if (city.getName().equals("") || city.getCode().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
             City p = cityDao.findByCode(city.getCode());
-            if (p != null){
+            if (p != null) {
                 return responMessage.DUPLICATE("KODE");
             } else {
                 City p2 = cityDao.findByName(city.getName());
-                if (p2 !=null){
+                if (p2 != null) {
                     return responMessage.DUPLICATE("NAMA");
                 } else {
                     cityDao.save(city);
@@ -46,27 +46,19 @@ public class CityServiceImpl implements CityService{
 
     @Override
     public Object edit(City city) {
-        if (city.getId()==null||city.getName().equals("")||city.getCode().equals("")){
+        if (city.getId() == null || city.getName().equals("") || city.getCode().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
-            City pCode= cityDao.findId(city.getId());
-            if(pCode!= null){
-                if (city.getCode().equals(pCode.getCode())){
-                    City p2 = cityDao.findByName(city.getName());
-                    if (p2 !=null){
-                        return responMessage.DUPLICATE("NAMA");
+            City cId = cityDao.findId(city.getId());
+            if (cId != null) {
+                City cCode = cityDao.findByCode(city.getCode());
+                if (!cId.getCode().equals(city.getCode())) {
+                    if (cCode != null) {
+                        return responMessage.DUPLICATE("KODE");
                     } else {
-                        cityDao.save(city);
-                        return responMessage.SUCCESS_PROCESS_DATA();
-                    }
-                } else {
-                    City proCode = cityDao.findByCode(city.getCode());
-                    if (proCode!=null){
-                        return responMessage.DUPLICATE("CODE");
-                    } else {
-                        if (!city.getName().equals(pCode.getName())){
-                            City p2 = cityDao.findByName(city.getName());
-                            if (p2 !=null){
+                        City cName = cityDao.findByName(city.getName());
+                        if (!cId.getName().equals(city.getName())) {
+                            if (cName != null) {
                                 return responMessage.DUPLICATE("NAMA");
                             } else {
                                 cityDao.save(city);
@@ -77,6 +69,19 @@ public class CityServiceImpl implements CityService{
                             return responMessage.SUCCESS_PROCESS_DATA();
                         }
                     }
+                } else {
+                    City cName = cityDao.findByName(city.getName());
+                    if (!cId.getName().equals(city.getName())) {
+                        if (cName != null) {
+                            return responMessage.DUPLICATE("NAMA");
+                        } else {
+                            cityDao.save(city);
+                            return responMessage.SUCCESS_PROCESS_DATA();
+                        }
+                    } else {
+                        cityDao.save(city);
+                        return responMessage.SUCCESS_PROCESS_DATA();
+                    }
                 }
             } else {
                 return responMessage.NOT_FOUND("ID");
@@ -86,11 +91,11 @@ public class CityServiceImpl implements CityService{
 
     @Override
     public Object del(Integer id) {
-        if (id==null){
+        if (id == null) {
             return responMessage.BAD_REUQEST();
-        } else{
-            City pCode= cityDao.findId(id);
-            if(pCode!= null){
+        } else {
+            City pCode = cityDao.findId(id);
+            if (pCode != null) {
                 cityDao.deleteById(id);
                 return responMessage.SUCCESS_PROCESS_DATA();
             } else {
@@ -101,8 +106,8 @@ public class CityServiceImpl implements CityService{
 
     @Override
     public Object findById(Integer id) {
-        City pCode= cityDao.findId(id);
-        if(pCode!= null){
+        City pCode = cityDao.findId(id);
+        if (pCode != null) {
             return responMessage.SUCCESS_GET(cityDao.findById(id));
         } else {
             return responMessage.NOT_FOUND("ID");
