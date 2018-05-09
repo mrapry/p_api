@@ -1,4 +1,4 @@
-package com.psdkp.kkp.apipsdkp.controller.vessel;
+package com.psdkp.kkp.apipsdkp.controller.vesselController;
 
 import com.psdkp.kkp.apipsdkp.domain.Input;
 import com.psdkp.kkp.apipsdkp.domain.vessel.VesselType;
@@ -16,8 +16,8 @@ public class VesselTypeController {
 
     @GetMapping
     public Object getFindByName(
-            @RequestParam(defaultValue = "", required = false) String name,
             @RequestParam(defaultValue = "", required = false) Integer id,
+            @RequestParam(defaultValue = "", required = false) String name,
             Pageable pageable
     ) {
         if (id != null) {
@@ -34,7 +34,6 @@ public class VesselTypeController {
 
     @PutMapping
     public Object editUnitWorking(@RequestBody VesselType vesselType) {
-        System.out.println("EDIT VESSEL TYPE: " + vesselType.toString());
         return vesselTypeService.edit(vesselType);
     }
 
