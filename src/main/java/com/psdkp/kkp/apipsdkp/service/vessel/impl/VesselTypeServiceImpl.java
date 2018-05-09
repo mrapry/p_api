@@ -11,15 +11,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class VesselTypeServiceImpl implements VesselTypeService {
 
-    private final VesselTypeDao vesselTypeDao;
-
-    private final ResponMessage responMessage;
+    @Autowired
+    private VesselTypeDao vesselTypeDao;
 
     @Autowired
-    public VesselTypeServiceImpl(VesselTypeDao vesselTypeDao, ResponMessage responMessage) {
-        this.vesselTypeDao = vesselTypeDao;
-        this.responMessage = responMessage;
-    }
+    private ResponMessage responMessage;
 
     @Override
     public Object findAll(String name, Pageable pageable) {
@@ -31,12 +27,12 @@ public class VesselTypeServiceImpl implements VesselTypeService {
         if (vesselType.getName().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
-            VesselType vt1 = vesselTypeDao.findByName(vesselType.getName());
-            if (vt1 == null) {
+            VesselType vName = vesselTypeDao.findByName(vesselType.getName());
+            if (vName != null) {
+                return responMessage.DUPLICATE("NAMA");
+            } else {
                 vesselTypeDao.save(vesselType);
                 return responMessage.SUCCESS_PROCESS_DATA();
-            } else {
-                return responMessage.DUPLICATE("TYPE");
             }
         }
     }
@@ -48,9 +44,14 @@ public class VesselTypeServiceImpl implements VesselTypeService {
         } else {
             VesselType vId = vesselTypeDao.findId(vesselType.getId());
             if (vId != null) {
-                VesselType vName = vesselTypeDao.findByName(vesselType.getName());
-                if (vName != null) {
-                    return responMessage.DUPLICATE("TYPE");
+                if (!vId.getName().equals(vesselType.getName())) {
+                    VesselType vName = vesselTypeDao.findByName(vesselType.getName());
+                    if (vName != null) {
+                        return responMessage.DUPLICATE("NAMA");
+                    } else {
+                        vesselTypeDao.save(vesselType);
+                        return responMessage.SUCCESS_PROCESS_DATA();
+                    }
                 } else {
                     vesselTypeDao.save(vesselType);
                     return responMessage.SUCCESS_PROCESS_DATA();
