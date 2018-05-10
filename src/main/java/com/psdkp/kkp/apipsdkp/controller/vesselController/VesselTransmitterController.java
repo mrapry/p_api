@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/vessel/transmitter")
 public class VesselTransmitterController {
-    
+
     @Autowired
     private VesselTransmitterServiceImpl transmitterService;
 
@@ -18,10 +18,13 @@ public class VesselTransmitterController {
     public Object getFindByName(
             @RequestParam(defaultValue = "", required = false) Integer id,
             @RequestParam(defaultValue = "", required = false) String name,
+            @RequestParam(defaultValue = "", required = false) String code,
             Pageable pageable
     ) {
         if (id != null) {
             return transmitterService.findById(id);
+        } else if (!code.equals("")) {
+            return transmitterService.findByCode(code);
         } else {
             return transmitterService.findAll(name, pageable);
         }
