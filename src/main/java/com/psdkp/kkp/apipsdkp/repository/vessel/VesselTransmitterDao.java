@@ -8,7 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TransmitterDao extends PagingAndSortingRepository<VesselTransmitter, Integer> {
+public interface VesselTransmitterDao extends PagingAndSortingRepository<VesselTransmitter, Integer> {
 
     @Query(value = "SELECT * FROM vessel_transmitter t WHERE t.transmitter_code LIKE %?1% OR t.skat_code LIKE %?1% OR t.skat_exp LIKE %?1%", nativeQuery = true)
     Page<VesselTransmitter> findAllByName(String name, Pageable pageable);
@@ -19,4 +19,7 @@ public interface TransmitterDao extends PagingAndSortingRepository<VesselTransmi
     VesselTransmitter findBySkatCode(String skatCode);
 
     VesselTransmitter findByTransmitterCode(String transmitterCode);
+
+    @Query(value = "SELECT * FROM vessel_transmitter t WHERE t.transmitter_code=?1", nativeQuery = true)
+    VesselTransmitter findCode(String code);
 }

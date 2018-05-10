@@ -5,4 +5,6 @@ import com.psdkp.kkp.apipsdkp.service.BaseService;
 
 public interface VesselTransmitterService extends BaseService<Object, VesselTransmitter, Integer> {
 
+    Object findByCode(String code);
+
 }
