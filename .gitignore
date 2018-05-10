@@ -8,6 +8,8 @@ target/
 .project
 .settings
 .springBeans
+.sts4-cache
+.vscode
 
 ### IntelliJ IDEA ###
 .idea
