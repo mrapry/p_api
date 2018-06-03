@@ -1,4 +1,4 @@
-package com.psdkp.kkp.apipsdkp.controller.vessel;
+package com.psdkp.kkp.apipsdkp.controller.vesselController;
 
 import com.psdkp.kkp.apipsdkp.domain.Input;
 import com.psdkp.kkp.apipsdkp.domain.vessel.Company;
@@ -18,21 +18,15 @@ public class CompanyController {
     public Object getAll(
             @RequestParam(defaultValue = "", required = false) Integer id,
             @RequestParam(defaultValue = "", required = false) String name,
-            /*@RequestParam(defaultValue = "", required = false) String address,
-            @RequestParam(defaultValue = "", required = false) String postCode,
-            @RequestParam(defaultValue = "", required = false) String phone,
-            @RequestParam(defaultValue = "", required = false) String faxmail,
-            @RequestParam(defaultValue = "", required = false) String email,
-            @RequestParam(defaultValue = "", required = false) String siup,
-            @RequestParam(defaultValue = "", required = false) String siupDate,
-            @RequestParam(defaultValue = "", required = false) String pic,
-            @RequestParam(defaultValue = "", required = false) String active,*/
+            @RequestParam(defaultValue = "", required = false) Integer subDistrictId,
             Pageable pageable
     ) {
         if (id != null) {
             return companyService.findById(id);
-        } else {
+        } else if (name != null){
             return companyService.findAll(name, pageable);
+        } else {
+            return companyService.findSubDistrict(subDistrictId, pageable);
         }
     }
 

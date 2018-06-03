@@ -1,6 +1,8 @@
 package com.psdkp.kkp.apipsdkp.service.vessel.impl;
 
+import com.psdkp.kkp.apipsdkp.domain.address.SubDistrict;
 import com.psdkp.kkp.apipsdkp.domain.vessel.Company;
+import com.psdkp.kkp.apipsdkp.repository.address.SubDistrictDao;
 import com.psdkp.kkp.apipsdkp.repository.vessel.CompanyDao;
 import com.psdkp.kkp.apipsdkp.service.vessel.CompanyService;
 import com.psdkp.kkp.apipsdkp.util.ResponMessage;
@@ -11,15 +13,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
-    private final CompanyDao companyDao;
-
-    private final ResponMessage responMessage;
+    @Autowired
+    private CompanyDao companyDao;
 
     @Autowired
-    public CompanyServiceImpl(CompanyDao companyDao, ResponMessage responMessage) {
-        this.companyDao = companyDao;
-        this.responMessage = responMessage;
-    }
+    private SubDistrictDao subDistrictDao;
+
+    @Autowired
+    private ResponMessage responMessage;
 
     @Override
     public Object findAll(String name, Pageable pageable) {
@@ -29,37 +30,37 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Object save(Company company) {
 
-        if (company.getCode().equals("") || company.getName().equals("") || company.getAddress().equals("") || company.getPostCode().equals("") || company.getPhone().equals("") || company.getFaxmail().equals("") || company.getEmail().equals("") || company.getSiup().equals("") || company.getSiupDate().equals("") || company.getPic().equals("") || company.getActive().equals("")) {
+        if (company.getCode().equals("") ||
+                company.getName().equals("") ||
+                company.getAddress().equals("") ||
+                company.getZipCode().equals("") ||
+                company.getPicName().equals("") ||
+                company.getPicIdentity().equals("") ||
+                company.getCompanyPhone().length == 0 ||
+                company.getFacsimile().equals("") ||
+                company.getFacsimile().equals("") ||
+                company.getEmail().equals("") ||
+                company.getSiupCode().equals("") ||
+                company.getSiupDateStart().equals("") ||
+                company.getSiupDateExp().equals("")
+                ) {
             return responMessage.BAD_REUQEST();
         } else {
-            Company c0 = companyDao.findByCode(company.getCode());
-            Company c1 = companyDao.findByName(company.getName());
-            Company c2 = companyDao.findByAddress(company.getAddress());
-            Company c3 = companyDao.findByPhone(company.getPhone());
-            Company c4 = companyDao.findByFaxmail(company.getFaxmail());
-            Company c5 = companyDao.findByEmail(company.getEmail());
-            Company c6 = companyDao.findBySiup(company.getSiup());
-
-            if (c0 != null) {
-                return responMessage.DUPLICATE("KODE PERUSAHAAN");
-            } else if (c1 != null) {
-                return responMessage.DUPLICATE("NAMA PERUSAHAAN");
-            } else if (c2 != null) {
-                return responMessage.DUPLICATE("ALAMAT PERUSAHAAN");
-            } else if (c3 != null) {
-                return responMessage.DUPLICATE("NOMOR TELEPON");
-            } else if (c4 != null) {
-                return responMessage.DUPLICATE("FAKSIMILE");
-            } else if (c5 != null) {
-                return responMessage.DUPLICATE("EMAIL");
-            } else if (c6 != null) {
-                return responMessage.DUPLICATE("SIUP");
-            } else if (company.getPostCode().length() > 5 || company.getPostCode().length() < 5) {
-                if (company.getPostCode().length() > 5) {
-                    return responMessage.BAD_REUQEST();
-                } else {
-                    return responMessage.BAD_REUQEST();
-                }
+            Company cCode = companyDao.findByCode(company.getCode());
+            Company cName = companyDao.findByName(company.getName());
+            Company cSiupCode = companyDao.findBySiupCode(company.getSiupCode());
+            Company cEmail = companyDao.findByEmail(company.getEmail());
+            SubDistrict subDistrict = subDistrictDao.findId(company.getSubDistrict().getId());
+            if (cCode != null) {
+                return responMessage.DUPLICATE("KODE");
+            } else if (cName != null) {
+                return responMessage.DUPLICATE("NAMA");
+            } else if (cSiupCode != null) {
+                return responMessage.DUPLICATE("NOMOR SIUP");
+            } else if (cEmail != null) {
+                return responMessage.DUPLICATE("ALAMAT EMAIL");
+            } else if (subDistrict == null) {
+                return responMessage.NOT_FOUND("SUB DISTRICT");
             } else {
                 companyDao.save(company);
                 return responMessage.SUCCESS_PROCESS_DATA();
@@ -69,1150 +70,62 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public Object edit(Company company) {
-        if (company.getId() == null || company.getCode().equals("") || company.getName().equals("") || company.getAddress().equals("") || company.getPostCode().equals("") || company.getPhone().equals("") || company.getFaxmail().equals("") || company.getEmail().equals("") || company.getSiup().equals("") || company.getSiupDate().equals("") || company.getPic().equals("") || company.getActive().equals("")) {
+        if (company.getId() == null ||
+                company.getCode().equals("") ||
+                company.getName().equals("") ||
+                company.getAddress().equals("") ||
+                company.getZipCode().equals("") ||
+                company.getPicName().equals("") ||
+                company.getPicIdentity().equals("") ||
+                company.getCompanyPhone().length == 0 ||
+                company.getFacsimile().equals("") ||
+                company.getFacsimile().equals("") ||
+                company.getEmail().equals("") ||
+                company.getSiupCode().equals("") ||
+                company.getSiupDateStart().equals("") ||
+                company.getSiupDateExp().equals("")
+                ) {
             return responMessage.BAD_REUQEST();
         } else {
+            Company cCode = companyDao.findByCode(company.getCode());
+            Company cName = companyDao.findByName(company.getName());
+            Company cSiupCode = companyDao.findBySiupCode(company.getSiupCode());
+            Company cEmail = companyDao.findByEmail(company.getEmail());
             Company cId = companyDao.findId(company.getId());
-            if (cId != null) {
-                Company c1 = companyDao.findByName(company.getName());
-                Company c2 = companyDao.findByAddress(company.getAddress());
-                Company c3 = companyDao.findByPhone(company.getPhone());
-                Company c4 = companyDao.findByFaxmail(company.getFaxmail());
-                Company c5 = companyDao.findByEmail(company.getEmail());
-                Company c6 = companyDao.findBySiup(company.getSiup());
+            SubDistrict subDistrict = subDistrictDao.findId(company.getSubDistrict().getId());
 
-                if (!cId.getCode().equals(company.getCode())) {
-                    Company cCode = companyDao.findByCode(company.getCode());
-                    if (cCode != null) {
-                        return responMessage.DUPLICATE("KODE");
-                    } else {
-                        if (!cId.getName().equals(company.getName())) {
-                            if (c1 != null) {
-                                return responMessage.DUPLICATE("NAMA");
-                            } else {
-                                if (!cId.getAddress().equals(company.getAddress())) {
-                                    if (c2 != null) {
-                                        return responMessage.DUPLICATE("ALAMAT");
-                                    } else {
-                                        if (!cId.getPhone().equals(company.getPhone())) {
-                                            if (c3 != null) {
-                                                return responMessage.DUPLICATE("TELEPON");
-                                            } else {
-                                                if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                                    if (c4 != null) {
-                                                        return responMessage.DUPLICATE("FAKSMILE");
-                                                    } else {
-                                                        if (!cId.getEmail().equals(company.getEmail())) {
-                                                            if (c5 != null) {
-                                                                return responMessage.DUPLICATE("EMAIL");
-                                                            } else {
-                                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                                    if (c6 != null) {
-                                                                        return responMessage.DUPLICATE("SIUP");
-                                                                    } else {
-                                                                        companyDao.save(company);
-                                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                                    }
-                                                                } else {
-                                                                    companyDao.save(company);
-                                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                                }
-                                                            }
-                                                        } else {
-                                                            if (!cId.getSiup().equals(company.getSiup())) {
-                                                                if (c6 != null) {
-                                                                    return responMessage.DUPLICATE("SIUP");
-                                                                } else {
-                                                                    companyDao.save(company);
-                                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                                }
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!cId.getEmail().equals(company.getEmail())) {
-                                                        if (c5 != null) {
-                                                            return responMessage.DUPLICATE("EMAIL");
-                                                        } else {
-                                                            if (!cId.getSiup().equals(company.getSiup())) {
-                                                                if (c6 != null) {
-                                                                    return responMessage.DUPLICATE("SIUP");
-                                                                } else {
-                                                                    companyDao.save(company);
-                                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                                }
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        }
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                                if (c4 != null) {
-                                                    return responMessage.DUPLICATE("FAKSMILE");
-                                                } else {
-                                                    if (!cId.getEmail().equals(company.getEmail())) {
-                                                        if (c5 != null) {
-                                                            return responMessage.DUPLICATE("EMAIL");
-                                                        } else {
-                                                            if (!cId.getSiup().equals(company.getSiup())) {
-                                                                if (c6 != null) {
-                                                                    return responMessage.DUPLICATE("SIUP");
-                                                                } else {
-                                                                    companyDao.save(company);
-                                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                                }
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        }
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getEmail().equals(company.getEmail())) {
-                                                    if (c5 != null) {
-                                                        return responMessage.DUPLICATE("EMAIL");
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (!cId.getPhone().equals(company.getPhone())) {
-                                        if (c3 != null) {
-                                            return responMessage.DUPLICATE("TELEPON");
-                                        } else {
-                                            if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                                if (c4 != null) {
-                                                    return responMessage.DUPLICATE("FAKSMILE");
-                                                } else {
-                                                    if (!cId.getEmail().equals(company.getEmail())) {
-                                                        if (c5 != null) {
-                                                            return responMessage.DUPLICATE("EMAIL");
-                                                        } else {
-                                                            if (!cId.getSiup().equals(company.getSiup())) {
-                                                                if (c6 != null) {
-                                                                    return responMessage.DUPLICATE("SIUP");
-                                                                } else {
-                                                                    companyDao.save(company);
-                                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                                }
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        }
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getEmail().equals(company.getEmail())) {
-                                                    if (c5 != null) {
-                                                        return responMessage.DUPLICATE("EMAIL");
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                            if (c4 != null) {
-                                                return responMessage.DUPLICATE("FAKSMILE");
-                                            } else {
-                                                if (!cId.getEmail().equals(company.getEmail())) {
-                                                    if (c5 != null) {
-                                                        return responMessage.DUPLICATE("EMAIL");
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            if (!cId.getEmail().equals(company.getEmail())) {
-                                                if (c5 != null) {
-                                                    return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        }
-                                    }
-                                } /*end*/
-                            }
-                        } else {
-                            if (!cId.getAddress().equals(company.getAddress())) {
-                                if (c2 != null) {
-                                    return responMessage.DUPLICATE("ALAMAT");
-                                } else {
-                                    if (!cId.getPhone().equals(company.getPhone())) {
-                                        if (c3 != null) {
-                                            return responMessage.DUPLICATE("TELEPON");
-                                        } else {
-                                            if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                                if (c4 != null) {
-                                                    return responMessage.DUPLICATE("FAKSMILE");
-                                                } else {
-                                                    if (!cId.getEmail().equals(company.getEmail())) {
-                                                        if (c5 != null) {
-                                                            return responMessage.DUPLICATE("EMAIL");
-                                                        } else {
-                                                            if (!cId.getSiup().equals(company.getSiup())) {
-                                                                if (c6 != null) {
-                                                                    return responMessage.DUPLICATE("SIUP");
-                                                                } else {
-                                                                    companyDao.save(company);
-                                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                                }
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        }
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getEmail().equals(company.getEmail())) {
-                                                    if (c5 != null) {
-                                                        return responMessage.DUPLICATE("EMAIL");
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                            if (c4 != null) {
-                                                return responMessage.DUPLICATE("FAKSMILE");
-                                            } else {
-                                                if (!cId.getEmail().equals(company.getEmail())) {
-                                                    if (c5 != null) {
-                                                        return responMessage.DUPLICATE("EMAIL");
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            if (!cId.getEmail().equals(company.getEmail())) {
-                                                if (c5 != null) {
-                                                    return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            } else {
-                                if (!cId.getPhone().equals(company.getPhone())) {
-                                    if (c3 != null) {
-                                        return responMessage.DUPLICATE("TELEPON");
-                                    } else {
-                                        if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                            if (c4 != null) {
-                                                return responMessage.DUPLICATE("FAKSMILE");
-                                            } else {
-                                                if (!cId.getEmail().equals(company.getEmail())) {
-                                                    if (c5 != null) {
-                                                        return responMessage.DUPLICATE("EMAIL");
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            if (!cId.getEmail().equals(company.getEmail())) {
-                                                if (c5 != null) {
-                                                    return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                        if (c4 != null) {
-                                            return responMessage.DUPLICATE("FAKSMILE");
-                                        } else {
-                                            if (!cId.getEmail().equals(company.getEmail())) {
-                                                if (c5 != null) {
-                                                    return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        if (!cId.getEmail().equals(company.getEmail())) {
-                                            if (c5 != null) {
-                                                return responMessage.DUPLICATE("EMAIL");
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        } else {
-                                            if (!cId.getSiup().equals(company.getSiup())) {
-                                                if (c6 != null) {
-                                                    return responMessage.DUPLICATE("SIUP");
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            } else {
-                                                companyDao.save(company);
-                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+            if (cId != null) {
+                if (subDistrict == null) {
+                    return responMessage.NOT_FOUND("KELURAHAN");
                 } else {
-                    if (!cId.getName().equals(company.getName())) {
-                        if (c1 != null) {
-                            return responMessage.DUPLICATE("NAMA");
+                    if (!cId.getCode().equals(company.getCode())) {
+                        if (cCode != null) {
+                            return responMessage.DUPLICATE("KODE");
                         } else {
-                            if (!cId.getAddress().equals(company.getAddress())) {
-                                if (c2 != null) {
-                                    return responMessage.DUPLICATE("ALAMAT");
+                            if (!cId.getName().equals(company.getName())) {
+                                if (cName != null) {
+                                    return responMessage.DUPLICATE("NAMA");
                                 } else {
-                                    if (!cId.getPhone().equals(company.getPhone())) {
-                                        if (c3 != null) {
-                                            return responMessage.DUPLICATE("TELEPON");
-                                        } else {
-                                            if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                                if (c4 != null) {
-                                                    return responMessage.DUPLICATE("FAKSMILE");
-                                                } else {
-                                                    if (!cId.getEmail().equals(company.getEmail())) {
-                                                        if (c5 != null) {
-                                                            return responMessage.DUPLICATE("EMAIL");
-                                                        } else {
-                                                            if (!cId.getSiup().equals(company.getSiup())) {
-                                                                if (c6 != null) {
-                                                                    return responMessage.DUPLICATE("SIUP");
-                                                                } else {
-                                                                    companyDao.save(company);
-                                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                                }
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        }
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getEmail().equals(company.getEmail())) {
-                                                    if (c5 != null) {
-                                                        return responMessage.DUPLICATE("EMAIL");
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                            if (c4 != null) {
-                                                return responMessage.DUPLICATE("FAKSMILE");
-                                            } else {
-                                                if (!cId.getEmail().equals(company.getEmail())) {
-                                                    if (c5 != null) {
-                                                        return responMessage.DUPLICATE("EMAIL");
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
+                                    if (!cId.getSiupCode().equals(company.getSiupCode())) {
+                                        if (cSiupCode != null) {
+                                            return responMessage.DUPLICATE("NOMOR SIUP");
                                         } else {
                                             if (!cId.getEmail().equals(company.getEmail())) {
-                                                if (c5 != null) {
+                                                if (cEmail != null) {
                                                     return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
                                                 } else {
                                                     companyDao.save(company);
                                                     return responMessage.SUCCESS_PROCESS_DATA();
                                                 }
-                                            }
-                                        }
-                                    }
-                                }
-                            } else {
-                                if (!cId.getPhone().equals(company.getPhone())) {
-                                    if (c3 != null) {
-                                        return responMessage.DUPLICATE("TELEPON");
-                                    } else {
-                                        if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                            if (c4 != null) {
-                                                return responMessage.DUPLICATE("FAKSMILE");
                                             } else {
-                                                if (!cId.getEmail().equals(company.getEmail())) {
-                                                    if (c5 != null) {
-                                                        return responMessage.DUPLICATE("EMAIL");
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            if (!cId.getEmail().equals(company.getEmail())) {
-                                                if (c5 != null) {
-                                                    return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                        if (c4 != null) {
-                                            return responMessage.DUPLICATE("FAKSMILE");
-                                        } else {
-                                            if (!cId.getEmail().equals(company.getEmail())) {
-                                                if (c5 != null) {
-                                                    return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
+                                                companyDao.save(company);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
                                             }
                                         }
                                     } else {
                                         if (!cId.getEmail().equals(company.getEmail())) {
-                                            if (c5 != null) {
+                                            if (cEmail != null) {
                                                 return responMessage.DUPLICATE("EMAIL");
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        } else {
-                                            if (!cId.getSiup().equals(company.getSiup())) {
-                                                if (c6 != null) {
-                                                    return responMessage.DUPLICATE("SIUP");
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            } else {
-                                                companyDao.save(company);
-                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                            }
-                                        }
-                                    }
-                                }
-                            } /*end*/
-                        }
-                    } else {
-                        if (!cId.getAddress().equals(company.getAddress())) {
-                            if (c2 != null) {
-                                return responMessage.DUPLICATE("ALAMAT");
-                            } else {
-                                if (!cId.getPhone().equals(company.getPhone())) {
-                                    if (c3 != null) {
-                                        return responMessage.DUPLICATE("TELEPON");
-                                    } else {
-                                        if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                            if (c4 != null) {
-                                                return responMessage.DUPLICATE("FAKSMILE");
-                                            } else {
-                                                if (!cId.getEmail().equals(company.getEmail())) {
-                                                    if (c5 != null) {
-                                                        return responMessage.DUPLICATE("EMAIL");
-                                                    } else {
-                                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                                            if (c6 != null) {
-                                                                return responMessage.DUPLICATE("SIUP");
-                                                            } else {
-                                                                companyDao.save(company);
-                                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                                            }
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    }
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            if (!cId.getEmail().equals(company.getEmail())) {
-                                                if (c5 != null) {
-                                                    return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                        if (c4 != null) {
-                                            return responMessage.DUPLICATE("FAKSMILE");
-                                        } else {
-                                            if (!cId.getEmail().equals(company.getEmail())) {
-                                                if (c5 != null) {
-                                                    return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        if (!cId.getEmail().equals(company.getEmail())) {
-                                            if (c5 != null) {
-                                                return responMessage.DUPLICATE("EMAIL");
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        } else {
-                                            if (!cId.getSiup().equals(company.getSiup())) {
-                                                if (c6 != null) {
-                                                    return responMessage.DUPLICATE("SIUP");
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            } else {
-                                                companyDao.save(company);
-                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            if (!cId.getPhone().equals(company.getPhone())) {
-                                if (c3 != null) {
-                                    return responMessage.DUPLICATE("TELEPON");
-                                } else {
-                                    if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                        if (c4 != null) {
-                                            return responMessage.DUPLICATE("FAKSMILE");
-                                        } else {
-                                            if (!cId.getEmail().equals(company.getEmail())) {
-                                                if (c5 != null) {
-                                                    return responMessage.DUPLICATE("EMAIL");
-                                                } else {
-                                                    if (!cId.getSiup().equals(company.getSiup())) {
-                                                        if (c6 != null) {
-                                                            return responMessage.DUPLICATE("SIUP");
-                                                        } else {
-                                                            companyDao.save(company);
-                                                            return responMessage.SUCCESS_PROCESS_DATA();
-                                                        }
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                }
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        if (!cId.getEmail().equals(company.getEmail())) {
-                                            if (c5 != null) {
-                                                return responMessage.DUPLICATE("EMAIL");
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        } else {
-                                            if (!cId.getSiup().equals(company.getSiup())) {
-                                                if (c6 != null) {
-                                                    return responMessage.DUPLICATE("SIUP");
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            } else {
-                                                companyDao.save(company);
-                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                            }
-                                        }
-                                    }
-                                }
-                            } else {
-                                if (!cId.getFaxmail().equals(company.getFaxmail())) {
-                                    if (c4 != null) {
-                                        return responMessage.DUPLICATE("FAKSMILE");
-                                    } else {
-                                        if (!cId.getEmail().equals(company.getEmail())) {
-                                            if (c5 != null) {
-                                                return responMessage.DUPLICATE("EMAIL");
-                                            } else {
-                                                if (!cId.getSiup().equals(company.getSiup())) {
-                                                    if (c6 != null) {
-                                                        return responMessage.DUPLICATE("SIUP");
-                                                    } else {
-                                                        companyDao.save(company);
-                                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                                    }
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            }
-                                        } else {
-                                            if (!cId.getSiup().equals(company.getSiup())) {
-                                                if (c6 != null) {
-                                                    return responMessage.DUPLICATE("SIUP");
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            } else {
-                                                companyDao.save(company);
-                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (!cId.getEmail().equals(company.getEmail())) {
-                                        if (c5 != null) {
-                                            return responMessage.DUPLICATE("EMAIL");
-                                        } else {
-                                            if (!cId.getSiup().equals(company.getSiup())) {
-                                                if (c6 != null) {
-                                                    return responMessage.DUPLICATE("SIUP");
-                                                } else {
-                                                    companyDao.save(company);
-                                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                                }
-                                            } else {
-                                                companyDao.save(company);
-                                                return responMessage.SUCCESS_PROCESS_DATA();
-                                            }
-                                        }
-                                    } else {
-                                        if (!cId.getSiup().equals(company.getSiup())) {
-                                            if (c6 != null) {
-                                                return responMessage.DUPLICATE("SIUP");
                                             } else {
                                                 companyDao.save(company);
                                                 return responMessage.SUCCESS_PROCESS_DATA();
@@ -1222,6 +135,102 @@ public class CompanyServiceImpl implements CompanyService {
                                             return responMessage.SUCCESS_PROCESS_DATA();
                                         }
                                     }
+                                }
+                            } else {
+                                if (!cId.getSiupCode().equals(company.getSiupCode())) {
+                                    if (cSiupCode != null) {
+                                        return responMessage.DUPLICATE("NOMOR SIUP");
+                                    } else {
+                                        if (!cId.getEmail().equals(company.getEmail())) {
+                                            if (cEmail != null) {
+                                                return responMessage.DUPLICATE("EMAIL");
+                                            } else {
+                                                companyDao.save(company);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                            }
+                                        } else {
+                                            companyDao.save(company);
+                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                        }
+                                    }
+                                } else {
+                                    if (!cId.getEmail().equals(company.getEmail())) {
+                                        if (cEmail != null) {
+                                            return responMessage.DUPLICATE("EMAIL");
+                                        } else {
+                                            companyDao.save(company);
+                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                        }
+                                    } else {
+                                        companyDao.save(company);
+                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (!cId.getName().equals(company.getName())) {
+                            if (cName != null) {
+                                return responMessage.DUPLICATE("NAMA");
+                            } else {
+                                if (!cId.getSiupCode().equals(company.getSiupCode())) {
+                                    if (cSiupCode != null) {
+                                        return responMessage.DUPLICATE("NOMOR SIUP");
+                                    } else {
+                                        if (!cId.getEmail().equals(company.getEmail())) {
+                                            if (cEmail != null) {
+                                                return responMessage.DUPLICATE("EMAIL");
+                                            } else {
+                                                companyDao.save(company);
+                                                return responMessage.SUCCESS_PROCESS_DATA();
+                                            }
+                                        } else {
+                                            companyDao.save(company);
+                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                        }
+                                    }
+                                } else {
+                                    if (!cId.getEmail().equals(company.getEmail())) {
+                                        if (cEmail != null) {
+                                            return responMessage.DUPLICATE("EMAIL");
+                                        } else {
+                                            companyDao.save(company);
+                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                        }
+                                    } else {
+                                        companyDao.save(company);
+                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                    }
+                                }
+                            }
+                        } else {
+                            if (!cId.getSiupCode().equals(company.getSiupCode())) {
+                                if (cSiupCode != null) {
+                                    return responMessage.DUPLICATE("NOMOR SIUP");
+                                } else {
+                                    if (!cId.getEmail().equals(company.getEmail())) {
+                                        if (cEmail != null) {
+                                            return responMessage.DUPLICATE("EMAIL");
+                                        } else {
+                                            companyDao.save(company);
+                                            return responMessage.SUCCESS_PROCESS_DATA();
+                                        }
+                                    } else {
+                                        companyDao.save(company);
+                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                    }
+                                }
+                            } else {
+                                if (!cId.getEmail().equals(company.getEmail())) {
+                                    if (cEmail != null) {
+                                        return responMessage.DUPLICATE("EMAIL");
+                                    } else {
+                                        companyDao.save(company);
+                                        return responMessage.SUCCESS_PROCESS_DATA();
+                                    }
+                                } else {
+                                    companyDao.save(company);
+                                    return responMessage.SUCCESS_PROCESS_DATA();
                                 }
                             }
                         }
@@ -1253,6 +262,16 @@ public class CompanyServiceImpl implements CompanyService {
         Company company = companyDao.findId(id);
         if (company != null) {
             return responMessage.SUCCESS_GET(companyDao.findById(id));
+        } else {
+            return responMessage.NOT_FOUND("ID");
+        }
+    }
+
+    @Override
+    public Object findSubDistrict(Integer subDistrictId, Pageable pageable) {
+        SubDistrict subDistrict = subDistrictDao.findId(subDistrictId);
+        if (subDistrict != null) {
+            return responMessage.SUCCESS_GET(subDistrictDao.findId(subDistrictId));
         } else {
             return responMessage.NOT_FOUND("ID");
         }
