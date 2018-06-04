@@ -10,7 +10,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompanyDao extends PagingAndSortingRepository<Company, Integer> {
 
-    @Query(value = "SELECT * FROM company c WHERE c.code LIKE %?1% OR c.name LIKE %?1% OR c.address LIKE %?1% OR c.post_code LIKE %?1% OR c.phone LIKE %?1% OR c.faxmail LIKE %?1% OR c.email LIKE %?1% OR c.siup LIKE %?1% OR c.siup_date LIKE %?1% OR c.pic LIKE %?1% OR c.active LIKE %?1%", nativeQuery = true)
+    @Query(value = "SELECT * FROM company c WHERE " +
+            "c.code LIKE %?1% OR " +
+            "c.name LIKE %?1% OR " +
+            "c.address LIKE %?1% OR " +
+            "c.sub_district_id LIKE %?1% OR " +
+            "c.zip_code LIKE %?1% OR " +
+            "c.pic_name LIKE %?1% OR " +
+            "c.pic_identity LIKE %?1% OR " +
+            "c.company_phone LIKE %?1% OR " +
+            "c.facsimile LIKE %?1% OR " +
+            "c.email LIKE %?1% OR " +
+            "c.siup_code LIKE %?1% OR " +
+            "c.siup_date_start LIKE %?1% OR " +
+            "c.siup_date_exp LIKE %?1% OR " +
+            "c.status LIKE %?1%", nativeQuery = true)
     Page<Company> findAllByName(String name, Pageable pageable);
 
     @Query(value = "SELECT * FROM company c WHERE c.id=?1", nativeQuery = true)
@@ -20,21 +34,7 @@ public interface CompanyDao extends PagingAndSortingRepository<Company, Integer>
 
     Company findByName(String name);
 
-    Company findByAddress(String address);
-
-    Company findByPostCode(String code);
-
-    Company findByPhone(String phone);
-
-    Company findByFaxmail(String faxmail);
+    Company findBySiupCode(String code);
 
     Company findByEmail(String email);
-
-    Company findBySiup(String siup);
-
-    Company findBySiupDate(String siupDate);
-
-    Company findByPic(String pic);
-
-    Company findByActive(String active);
 }
