@@ -1,9 +1,11 @@
 package com.psdkp.kkp.apipsdkp.service.harbor.impl;
 
-import com.psdkp.kkp.apipsdkp.domain.address.City;
+import com.github.kevinsawicki.http.HttpRequest;
+
 import com.psdkp.kkp.apipsdkp.domain.harbor.Harbor;
 import com.psdkp.kkp.apipsdkp.domain.harbor.HarborType;
-import com.psdkp.kkp.apipsdkp.repository.address.CityDao;
+import com.psdkp.kkp.apipsdkp.domain.harbor.responseCity.ResponseCity;
+import com.psdkp.kkp.apipsdkp.domain.harbor.responseCity.Data;
 import com.psdkp.kkp.apipsdkp.repository.harbor.HarborDao;
 import com.psdkp.kkp.apipsdkp.repository.harbor.HarborTypeDao;
 import com.psdkp.kkp.apipsdkp.service.harbor.HarborService;
@@ -22,9 +24,6 @@ public class HarborServiceImpl implements HarborService {
     private HarborTypeDao harborTypeDao;
 
     @Autowired
-    private CityDao cityDao;
-
-    @Autowired
     private ResponMessage responMessage;
 
     @Override
@@ -34,13 +33,17 @@ public class HarborServiceImpl implements HarborService {
 
     @Override
     public Object save(Harbor harbor) {
-        if (harbor.getCode().equals("") || harbor.getName().equals("") || harbor.getAddress().equals("") || harbor.getCity().getId() == null || harbor.getHarborType().getId() == null) {
+        if (harbor.getCode().equals("") || harbor.getName().equals("") || harbor.getAddress().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
             Harbor hCode = harborDao.findByCode(harbor.getCode());
             Harbor hName = harborDao.findByName(harbor.getName());
-            City cId = cityDao.findId(harbor.getCity().getId());
             HarborType typeId = harborTypeDao.findId(harbor.getHarborType().getId());
+
+            String response = HttpRequest.get("http://localhost:9001/address/province?id=1").accept("application/json").body();
+            Gson gson = new Gson();
+            ResponseCity rc = gson.fromJson(response, ResponseCity.class);
+            Data u10 = rc.data;
 
             if (hCode != null) {
                 return responMessage.DUPLICATE("KODE");
