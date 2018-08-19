@@ -5,11 +5,8 @@ import com.psdkp.kkp.apipsdkp.repository.address.ProvinceDao;
 import com.psdkp.kkp.apipsdkp.service.address.ProvinceService;
 import com.psdkp.kkp.apipsdkp.util.ResponMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class ProvinceServiceImpl implements ProvinceService {
@@ -27,14 +24,14 @@ public class ProvinceServiceImpl implements ProvinceService {
 
     @Override
     public Object save(Province province) {
-        if (province.getName().equals("") || province.getCode().equals("")) {
+        if (province.getName().trim().equals("") || province.getCode().trim().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
-            Province p = provinceDao.findByCode(province.getCode());
+            Province p = provinceDao.findByCode(province.getCode().trim());
             if (p != null) {
                 return responMessage.DUPLICATE("KODE");
             } else {
-                Province p2 = provinceDao.findByName(province.getName());
+                Province p2 = provinceDao.findByName(province.getName().trim());
                 if (p2 != null) {
                     return responMessage.DUPLICATE("NAMA");
                 } else {
@@ -47,17 +44,17 @@ public class ProvinceServiceImpl implements ProvinceService {
 
     @Override
     public Object edit(Province province) {
-        if (province.getId() == null || province.getName().equals("") || province.getCode().equals("")) {
+        if (province.getId() == null || province.getName().trim().equals("") || province.getCode().trim().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
             Province pCode = provinceDao.findId(province.getId());
             if (pCode != null) {
-                if (province.getCode().equals(pCode.getCode())) {
-                    if (pCode.getName().equals(province.getName())){
+                if (province.getCode().trim().equals(pCode.getCode())) {
+                    if (pCode.getName().equals(province.getName().trim())){
                         provinceDao.save(province);
                         return responMessage.SUCCESS_PROCESS_DATA();
                     } else {
-                        Province p2 = provinceDao.findByName(province.getName());
+                        Province p2 = provinceDao.findByName(province.getName().trim());
                         if (p2 != null) {
                             return responMessage.DUPLICATE("NAMA");
                         } else {
@@ -66,12 +63,12 @@ public class ProvinceServiceImpl implements ProvinceService {
                         }
                     }
                 } else {
-                    Province proCode = provinceDao.findByCode(province.getCode());
+                    Province proCode = provinceDao.findByCode(province.getCode().trim());
                     if (proCode != null) {
                         return responMessage.DUPLICATE("CODE");
                     } else {
-                        if (!province.getName().equals(pCode.getName())) {
-                            Province p2 = provinceDao.findByName(province.getName());
+                        if (!province.getName().trim().equals(pCode.getName())) {
+                            Province p2 = provinceDao.findByName(province.getName().trim());
                             if (p2 != null) {
                                 return responMessage.DUPLICATE("NAMA");
                             } else {

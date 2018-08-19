@@ -1,14 +1,16 @@
 package com.psdkp.kkp.apipsdkp.controller.addressController;
 
+
 import com.psdkp.kkp.apipsdkp.domain.Input;
 import com.psdkp.kkp.apipsdkp.domain.address.SubDistrict;
 import com.psdkp.kkp.apipsdkp.service.address.impl.SubDistrictImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/address/subDistrict")
+@RequestMapping(value = "/area/subdistrict")
 public class SubDistrictController {
 
     @Autowired
@@ -18,7 +20,7 @@ public class SubDistrictController {
     public Object getFindByName(
             @RequestParam(defaultValue = "", required = false) String name,
             @RequestParam(defaultValue = "", required = false) Integer id,
-            Pageable pageable
+            @PageableDefault(sort = { "id" }, value = Integer.MAX_VALUE) Pageable pageable
     ){
         if (id!=null){
             return subDistrictService.findById(id);

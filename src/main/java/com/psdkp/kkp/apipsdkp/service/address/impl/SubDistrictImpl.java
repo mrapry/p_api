@@ -2,11 +2,9 @@ package com.psdkp.kkp.apipsdkp.service.address.impl;
 
 import com.psdkp.kkp.apipsdkp.domain.address.SubDistrict;
 import com.psdkp.kkp.apipsdkp.repository.address.SubDistrictDao;
-import com.psdkp.kkp.apipsdkp.service.BaseService;
 import com.psdkp.kkp.apipsdkp.service.address.SubDistrictService;
 import com.psdkp.kkp.apipsdkp.util.ResponMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +24,14 @@ public class SubDistrictImpl implements SubDistrictService {
 
     @Override
     public Object save(SubDistrict subDistrict) {
-        if (subDistrict.getName().equals("") || subDistrict.getCode().equals("")) {
+        if (subDistrict.getName().trim().equals("") || subDistrict.getCode().trim().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
-            SubDistrict p = subDistrictDao.findByCode(subDistrict.getCode());
+            SubDistrict p = subDistrictDao.findByCode(subDistrict.getCode().trim());
             if (p != null) {
                 return responMessage.DUPLICATE("KODE");
             } else {
-                SubDistrict p2 = subDistrictDao.findByName(subDistrict.getName());
+                SubDistrict p2 = subDistrictDao.findByName(subDistrict.getName().trim());
                 if (p2 != null) {
                     return responMessage.DUPLICATE("NAMA");
                 } else {
@@ -46,18 +44,18 @@ public class SubDistrictImpl implements SubDistrictService {
 
     @Override
     public Object edit(SubDistrict subDistrict) {
-        if (subDistrict.getId() == null || subDistrict.getName().equals("") || subDistrict.getCode().equals("")) {
+        if (subDistrict.getId() == null || subDistrict.getName().trim().equals("") || subDistrict.getCode().trim().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
             SubDistrict cId = subDistrictDao.findId(subDistrict.getId());
             if (cId != null) {
-                SubDistrict dCode = subDistrictDao.findByCode(subDistrict.getCode());
-                if (!cId.getCode().equals(subDistrict.getCode())) {
+                SubDistrict dCode = subDistrictDao.findByCode(subDistrict.getCode().trim());
+                if (!cId.getCode().equals(subDistrict.getCode().trim())) {
                     if (dCode != null) {
                         return responMessage.DUPLICATE("KODE");
                     } else {
-                        SubDistrict dName = subDistrictDao.findByName(subDistrict.getName());
-                        if (!cId.getName().equals(subDistrict.getName())) {
+                        SubDistrict dName = subDistrictDao.findByName(subDistrict.getName().trim());
+                        if (!cId.getName().equals(subDistrict.getName().trim())) {
                             if (dName != null) {
                                 return responMessage.DUPLICATE("NAMA");
                             } else {
@@ -70,8 +68,8 @@ public class SubDistrictImpl implements SubDistrictService {
                         }
                     }
                 } else {
-                    SubDistrict dName = subDistrictDao.findByName(subDistrict.getName());
-                    if (!cId.getName().equals(subDistrict.getName())) {
+                    SubDistrict dName = subDistrictDao.findByName(subDistrict.getName().trim());
+                    if (!cId.getName().equals(subDistrict.getName().trim())) {
                         if (dName != null) {
                             return responMessage.DUPLICATE("NAMA");
                         } else {

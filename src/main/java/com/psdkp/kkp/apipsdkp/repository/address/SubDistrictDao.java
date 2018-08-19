@@ -1,10 +1,8 @@
 package com.psdkp.kkp.apipsdkp.repository.address;
 
-import org.springframework.data.domain.Pageable;
-
 import com.psdkp.kkp.apipsdkp.domain.address.SubDistrict;
-
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;

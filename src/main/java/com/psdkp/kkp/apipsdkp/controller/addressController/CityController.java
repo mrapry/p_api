@@ -3,14 +3,13 @@ package com.psdkp.kkp.apipsdkp.controller.addressController;
 import com.psdkp.kkp.apipsdkp.domain.Input;
 import com.psdkp.kkp.apipsdkp.domain.address.City;
 import com.psdkp.kkp.apipsdkp.service.address.impl.CityServiceImpl;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value="/address/city")
+@RequestMapping(value="/area/city")
 public class CityController{
 
     @Autowired
@@ -20,11 +19,14 @@ public class CityController{
     public Object getFindByName(
             @RequestParam(defaultValue = "", required = false) String name,
             @RequestParam(defaultValue = "", required = false) Integer id,
-            Pageable pageable
+            @RequestParam(defaultValue = "", required = false) Integer provinceId,
+            @PageableDefault(sort = { "id" }, value = 520) Pageable pageable
     ){
         if (id!=null){
             return cityService.findById(id);
-        } else {
+        } else if (provinceId!=null){
+            return cityService.findAllByProvinceId(provinceId);
+        }else {
             return cityService.findAll(name, pageable);
         }
     }

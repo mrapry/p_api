@@ -1,14 +1,15 @@
 package com.psdkp.kkp.apipsdkp.service.address.impl;
 
+
 import com.psdkp.kkp.apipsdkp.domain.address.City;
 import com.psdkp.kkp.apipsdkp.repository.address.CityDao;
 import com.psdkp.kkp.apipsdkp.service.address.CityService;
 import com.psdkp.kkp.apipsdkp.util.ResponMessage;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CityServiceImpl implements CityService {
@@ -25,15 +26,20 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
+    public Object findAllByProvinceId(Integer id) {
+        return responMessage.SUCCESS_GET(cityDao.findByProvinceId(id));
+    }
+
+    @Override
     public Object save(City city) {
-        if (city.getName().equals("") || city.getCode().equals("")) {
+        if (city.getCode().trim().trim().equals("") || city.getCode().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
             City p = cityDao.findByCode(city.getCode());
             if (p != null) {
                 return responMessage.DUPLICATE("KODE");
             } else {
-                City p2 = cityDao.findByName(city.getName());
+                City p2 = cityDao.findByName(city.getCode().trim().trim());
                 if (p2 != null) {
                     return responMessage.DUPLICATE("NAMA");
                 } else {
@@ -46,7 +52,7 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public Object edit(City city) {
-        if (city.getId() == null || city.getName().equals("") || city.getCode().equals("")) {
+        if (city.getId() == null || city.getCode().trim().trim().equals("") || city.getCode().equals("")) {
             return responMessage.BAD_REUQEST();
         } else {
             City cId = cityDao.findId(city.getId());
@@ -56,8 +62,8 @@ public class CityServiceImpl implements CityService {
                     if (cCode != null) {
                         return responMessage.DUPLICATE("KODE");
                     } else {
-                        City cName = cityDao.findByName(city.getName());
-                        if (!cId.getName().equals(city.getName())) {
+                        City cName = cityDao.findByName(city.getCode().trim().trim());
+                        if (!cId.getName().equals(city.getCode().trim().trim())) {
                             if (cName != null) {
                                 return responMessage.DUPLICATE("NAMA");
                             } else {
@@ -70,8 +76,8 @@ public class CityServiceImpl implements CityService {
                         }
                     }
                 } else {
-                    City cName = cityDao.findByName(city.getName());
-                    if (!cId.getName().equals(city.getName())) {
+                    City cName = cityDao.findByName(city.getCode().trim().trim());
+                    if (!cId.getName().equals(city.getCode().trim().trim())) {
                         if (cName != null) {
                             return responMessage.DUPLICATE("NAMA");
                         } else {

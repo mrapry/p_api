@@ -2,14 +2,14 @@ package com.psdkp.kkp.apipsdkp.controller.addressController;
 
 import com.psdkp.kkp.apipsdkp.domain.Input;
 import com.psdkp.kkp.apipsdkp.domain.address.Province;
-import com.psdkp.kkp.apipsdkp.repository.address.ProvinceDao;
 import com.psdkp.kkp.apipsdkp.service.address.impl.ProvinceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/address/province")
+@RequestMapping(value = "/area/province")
 public class ProvinceController {
 
     @Autowired
@@ -19,7 +19,7 @@ public class ProvinceController {
     public Object getFindByName(
             @RequestParam(defaultValue = "", required = false) String name,
             @RequestParam(defaultValue = "", required = false) Integer id,
-            Pageable pageable
+            @PageableDefault(sort = { "id" }, value = 35) Pageable pageable
     ){
         if (id!=null){
             return provinceService.findById(id);
