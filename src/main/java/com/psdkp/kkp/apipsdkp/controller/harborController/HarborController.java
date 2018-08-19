@@ -5,6 +5,7 @@ import com.psdkp.kkp.apipsdkp.domain.harbor.Harbor;
 import com.psdkp.kkp.apipsdkp.service.harbor.impl.HarborServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +20,7 @@ public class HarborController {
             @RequestParam(defaultValue = "", required = false) String name,
             @RequestParam(defaultValue = "", required = false) Integer id,
             @RequestParam(defaultValue = "", required = false) Integer harborType,
-            Pageable pageable
+            @PageableDefault(sort = { "id" }, value = 2000)Pageable pageable
     ) {
         if (id != null) {
             return harborService.findById(id);
