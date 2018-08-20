@@ -1,9 +1,7 @@
 package com.psdkp.kkp.apipsdkp.domain.harbor;
 
 import lombok.Data;
-
 import javax.persistence.*;
-import java.util.Set;
 
 @Data
 @Entity

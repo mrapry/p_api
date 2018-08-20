@@ -1,11 +1,11 @@
 package com.psdkp.kkp.apipsdkp.service.harbor.impl;
 
-import com.github.kevinsawicki.http.HttpRequest;
+//import com.github.kevinsawicki.http.HttpRequest;
 
 import com.psdkp.kkp.apipsdkp.domain.harbor.Harbor;
 import com.psdkp.kkp.apipsdkp.domain.harbor.HarborType;
-import com.psdkp.kkp.apipsdkp.domain.harbor.responseCity.ResponseCity;
-import com.psdkp.kkp.apipsdkp.domain.harbor.responseCity.Data;
+//import com.psdkp.kkp.apipsdkp.domain.harbor.responseCity.ResponseCity;
+//import com.psdkp.kkp.apipsdkp.domain.harbor.responseCity.Data;
 import com.psdkp.kkp.apipsdkp.repository.harbor.HarborDao;
 import com.psdkp.kkp.apipsdkp.repository.harbor.HarborTypeDao;
 import com.psdkp.kkp.apipsdkp.service.harbor.HarborService;
@@ -40,79 +40,81 @@ public class HarborServiceImpl implements HarborService {
             Harbor hName = harborDao.findByName(harbor.getName());
             HarborType typeId = harborTypeDao.findId(harbor.getHarborType().getId());
 
-            String response = HttpRequest.get("http://localhost:9001/address/province?id=1").accept("application/json").body();
-            Gson gson = new Gson();
-            ResponseCity rc = gson.fromJson(response, ResponseCity.class);
-            Data u10 = rc.data;
-
-            if (hCode != null) {
-                return responMessage.DUPLICATE("KODE");
-            } else if (hName != null) {
-                return responMessage.DUPLICATE("NAMA");
-            } else if (cId == null) {
-                return responMessage.NOT_FOUND("KOTA");
-            } else if (typeId == null) {
-                return responMessage.NOT_FOUND("TYPE HARBOR");
-            } else {
-                harborDao.save(harbor);
-                return responMessage.SUCCESS_PROCESS_DATA();
-            }
+//            String response = HttpRequest.get("http://localhost:9001/address/province?id=1").accept("application/json").body();
+//            Gson gson = new Gson();
+//            ResponseCity rc = gson.fromJson(response, ResponseCity.class);
+//            Data u10 = rc.data;
+//
+//            if (hCode != null) {
+//                return responMessage.DUPLICATE("KODE");
+//            } else if (hName != null) {
+//                return responMessage.DUPLICATE("NAMA");
+//            } else if (cId == null) {
+//                return responMessage.NOT_FOUND("KOTA");
+//            } else if (typeId == null) {
+//                return responMessage.NOT_FOUND("TYPE HARBOR");
+//            } else {
+//                harborDao.save(harbor);
+//                return responMessage.SUCCESS_PROCESS_DATA();
+//            }
+            return null;
         }
     }
 
     @Override
     public Object edit(Harbor harbor) {
-        if (harbor.getId() == null || harbor.getCode().equals("") || harbor.getName().equals("") || harbor.getAddress().equals("") || harbor.getCity().getId() == null || harbor.getHarborType().getId() == null) {
+        if (harbor.getId() == null || harbor.getCode().equals("") || harbor.getName().equals("") || harbor.getAddress().equals("") || harbor.getHarborType().getId() == null) {
             return responMessage.BAD_REUQEST();
         } else {
             Harbor hId = harborDao.findId(harbor.getId());
 
-            if (hId != null){
-                Harbor hCode = harborDao.findByCode(harbor.getCode());
-                Harbor hName = harborDao.findByName(harbor.getName());
-                City cId = cityDao.findId(harbor.getCity().getId());
-                HarborType typeId = harborTypeDao.findId(harbor.getHarborType().getId());
-
-                if (typeId != null){
-                    if (cId != null){
-                        if (!hId.getCode().equals(harbor.getCode())){
-                            if (hCode != null){
-                                return responMessage.DUPLICATE("KODE");
-                            } else {
-                                if (!hId.getName().equals(harbor.getName())){
-                                    if (hName != null){
-                                        return responMessage.DUPLICATE("NAMA");
-                                    } else {
-                                        harborDao.save(harbor);
-                                        return responMessage.SUCCESS_PROCESS_DATA();
-                                    }
-                                } else {
-                                    harborDao.save(harbor);
-                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                }
-                            }
-                        } else {
-                            if (!hId.getName().equals(harbor.getName())){
-                                if (hName != null){
-                                    return responMessage.DUPLICATE("NAMA");
-                                } else {
-                                    harborDao.save(harbor);
-                                    return responMessage.SUCCESS_PROCESS_DATA();
-                                }
-                            } else {
-                                harborDao.save(harbor);
-                                return responMessage.SUCCESS_PROCESS_DATA();
-                            }
-                        }
-                    } else {
-                        return responMessage.NOT_FOUND("KOTA");
-                    }
-                } else {
-                    return responMessage.NOT_FOUND("TYPE");
-                }
-            } else {
-                return responMessage.NOT_FOUND("ID");
-            }
+//            if (hId != null){
+//                Harbor hCode = harborDao.findByCode(harbor.getCode());
+//                Harbor hName = harborDao.findByName(harbor.getName());
+//                City cId = cityDao.findId(harbor.getCity().getId());
+//                HarborType typeId = harborTypeDao.findId(harbor.getHarborType().getId());
+//
+//                if (typeId != null){
+//                    if (cId != null){
+//                        if (!hId.getCode().equals(harbor.getCode())){
+//                            if (hCode != null){
+//                                return responMessage.DUPLICATE("KODE");
+//                            } else {
+//                                if (!hId.getName().equals(harbor.getName())){
+//                                    if (hName != null){
+//                                        return responMessage.DUPLICATE("NAMA");
+//                                    } else {
+//                                        harborDao.save(harbor);
+//                                        return responMessage.SUCCESS_PROCESS_DATA();
+//                                    }
+//                                } else {
+//                                    harborDao.save(harbor);
+//                                    return responMessage.SUCCESS_PROCESS_DATA();
+//                                }
+//                            }
+//                        } else {
+//                            if (!hId.getName().equals(harbor.getName())){
+//                                if (hName != null){
+//                                    return responMessage.DUPLICATE("NAMA");
+//                                } else {
+//                                    harborDao.save(harbor);
+//                                    return responMessage.SUCCESS_PROCESS_DATA();
+//                                }
+//                            } else {
+//                                harborDao.save(harbor);
+//                                return responMessage.SUCCESS_PROCESS_DATA();
+//                            }
+//                        }
+//                    } else {
+//                        return responMessage.NOT_FOUND("KOTA");
+//                    }
+//                } else {
+//                    return responMessage.NOT_FOUND("TYPE");
+//                }
+//            } else {
+//                return responMessage.NOT_FOUND("ID");
+//            }
+            return null;
         }
     }
 
